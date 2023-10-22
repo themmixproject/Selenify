@@ -5,9 +5,10 @@ using System.Configuration;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using SauceDemo.Factories;
+using System.Collections.ObjectModel;
 
 internal class Program {
-    public static IWebDriver? driver;
+    public static IWebDriver driver;
     private static void Main( string[] args ) {
         string driverPath = "C:\\Webdrivers\\msedgedriver.exe";
         AppSettingsSection secrets = loadSecretsConfig();
@@ -18,6 +19,8 @@ internal class Program {
         string siteUsername = secrets.Settings["site_username"].Value;
         string sitePassword = secrets.Settings["site_password"].Value;
         loginUser( siteUsername, sitePassword );
+
+        loopThroughProducts();
 
         driver.Quit();
 
@@ -36,6 +39,32 @@ internal class Program {
         );
 
         return configuration.AppSettings;
+    }
+
+    public static void loopThroughProducts() {
+        ReadOnlyCollection<IWebElement> inventoryItems = getInventoryItems();
+
+        for ( int i = 0; i < inventoryItems.Count; i++) {
+            IWebElement inventoryItem = inventoryItems[i];
+
+            if (elementIsStale( inventoryItem ) ) {
+                inventoryItems = getInventoryItems();
+                inventoryItem = inventoryItems[i];
+            }
+
+            IWebElement inventoryItemLink = inventoryItem
+                .FindElement( By.ClassName( "inventory_item_label" ) )
+                .FindElement( By.TagName( "a" ) );
+            inventoryItemLink.Click();
+
+            driver.Navigate().Back();
+        }
+    }
+
+    public static ReadOnlyCollection<IWebElement> getInventoryItems() {
+        return driver
+            .FindElement( By.Id( "inventory_container" ) )
+            .FindElements( By.CssSelector( ".inventory_item" ) );
     }
 
     public static void loginUser(string username, string password ) {
@@ -63,4 +92,14 @@ internal class Program {
             )
         );
     }
+    public static bool elementIsStale( IWebElement element ) {
+        try {
+            bool _ = element.Displayed;
+            return false;
+        }
+        catch ( StaleElementReferenceException) {
+            return true;
+        }
+    }
+
 }
