@@ -4,33 +4,19 @@ using System;
 using System.Configuration;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using SauceDemo.Factories;
 
 internal class Program {
     public static IWebDriver? driver;
     private static void Main( string[] args ) {
-        string binaryPath = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
         string driverPath = "C:\\Webdrivers\\msedgedriver.exe";
-
-        Configuration secretsConfig = loadSecretsConfig();
-
-        string username = secretsConfig.AppSettings.Settings["username"].Value;
+        AppSettingsSection secrets = loadSecretsConfig();
+        string username = secrets.Settings["username"].Value;
         string profilePath = "C:\\Users\\" + username +"\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
+        driver = WebDriverFactory.GetEdgeDriver( profilePath, driverPath );
 
-        EdgeOptions options = new EdgeOptions {
-            BinaryLocation = binaryPath
-        };
-        options.AddArgument( "--no-sandbox" ); // If running in a restricted environment
-        options.AddArgument( "--disable-dev-shm-usage" ); // If running in a restricted environment
-        options.AddArgument( "--disable-gpu" ); // If you encounter GPU-related issues
-        options.AddArgument( "--disable-features=msUndersideButton" );
-        options.AddArgument( "--disable-features=msShowSignInIndicator" );
-        options.AddArgument( "--log-level=3" );
-        options.AddArgument( "user-data-dir=" + profilePath );
-
-        driver = new EdgeDriver( driverPath, options );
-
-        string siteUsername = secretsConfig.AppSettings.Settings["site_username"].Value;
-        string sitePassword = secretsConfig.AppSettings.Settings["site_password"].Value;
+        string siteUsername = secrets.Settings["site_username"].Value;
+        string sitePassword = secrets.Settings["site_password"].Value;
         loginUser( siteUsername, sitePassword );
 
         driver.Quit();
@@ -38,7 +24,7 @@ internal class Program {
         Console.WriteLine( "Hello, World!" );
     }
 
-    private static Configuration loadSecretsConfig() {
+    private static AppSettingsSection loadSecretsConfig() {
         ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap
         {
             ExeConfigFilename = @"Config\Secrets.config"
@@ -49,7 +35,7 @@ internal class Program {
             ConfigurationUserLevel.None
         );
 
-        return configuration;
+        return configuration.AppSettings;
     }
 
     public static void loginUser(string username, string password ) {
