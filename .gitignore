@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Secrets
 SauceDemo/Config/Secrets.config
+
+# Test download file store
+SauceDemo/Downloads/
