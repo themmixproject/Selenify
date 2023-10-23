@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.Security.Policy;
 using OpenQA.Selenium.DevTools.V116.Emulation;
+using SauceDemo.Models;
 
 internal class Program {
     public static IWebDriver driver;
@@ -20,11 +21,18 @@ internal class Program {
             string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
             driver = WebDriverFactory.GetEdgeDriver( profilePath, driverPath );
 
-            string siteUsername = secrets.Settings["site_username"].Value;
-            string sitePassword = secrets.Settings["site_password"].Value;
-            LoginUser( siteUsername, sitePassword );
+            var myProces = new AutomationProcess( () => {
+                Console.WriteLine( "my automation proces runs!" );
+            } );
+
+            myProces.Run();
+
+            int myNumber = 1;
+            //string siteUsername = secrets.Settings["site_username"].Value;
+            //string sitePassword = secrets.Settings["site_password"].Value;
+            //LoginUser( siteUsername, sitePassword );
             
-            loopThroughProducts();
+            //loopThroughProducts();
         }
         catch ( Exception ex ) {
             driver.Quit();
