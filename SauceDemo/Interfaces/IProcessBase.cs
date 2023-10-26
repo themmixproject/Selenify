@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SauceDemo.Interfaces
 {
-    internal interface IBaseProcess
+    public interface IProcessBase
     {
         public string ProcessName { get; set; }
-
         public void Run();
     }
 }
