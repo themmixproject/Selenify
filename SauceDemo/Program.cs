@@ -6,6 +6,7 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using SauceDemo.Factories;
 using System.Collections.ObjectModel;
+using SauceDemo.Processes;
 
 internal class Program {
     public static IWebDriver driver;
@@ -17,8 +18,9 @@ internal class Program {
             string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
             driver = WebDriverFactory.GetEdgeDriver( profilePath, driverPath );
 
-            
-            //string siteUsername = secrets.Settings["site_username"].Value;
+            DownloadSauceImages process = new DownloadSauceImages();
+            process.Run();
+            string siteUsername = secrets.Settings["site_username"].Value;
             //string sitePassword = secrets.Settings["site_password"].Value;
             //LoginUser( siteUsername, sitePassword );
             
