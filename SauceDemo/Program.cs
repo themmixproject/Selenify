@@ -4,36 +4,17 @@ using System;
 using System.Configuration;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using SauceDemo.Factories;
 using System.Collections.ObjectModel;
 using SauceDemo.Processes;
+using SauceDemo.SeleniumUtilities;
 
 internal class Program {
     public static IWebDriver driver;
     private static void Main( string[] args ) {
-        try {
-            string driverPath = "C:\\Webdrivers\\msedgedriver.exe";
-            AppSettingsSection secrets = loadSecretsConfig();
-            string username = secrets.Settings["username"].Value;
-            string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
-            driver = WebDriverFactory.GetEdgeDriver( profilePath, driverPath );
+        WebDriverManager.LoadEdgeDriver();
 
-            DownloadSauceImages process = new DownloadSauceImages();
-            process.Run();
-            string siteUsername = secrets.Settings["site_username"].Value;
-            //string sitePassword = secrets.Settings["site_password"].Value;
-            //LoginUser( siteUsername, sitePassword );
-            
-            //loopThroughProducts();
-        }
-        catch ( Exception ex ) {
-            driver.Quit();
-
-            throw new Exception(ex.Message );
-        }
-
-        driver.Quit();
-
+        DownloadSauceImages process = new DownloadSauceImages();
+        process.Run();
         Console.WriteLine( "Hello, World!" );
     }
 
