@@ -44,9 +44,6 @@ namespace SauceDemo.SeleniumUtilities
 
         private static EdgeOptions GetEdgeOptions()
         {
-            AppSettingsSection secrets = loadSecretsConfig();
-            string username = secrets.Settings["username"].Value;
-            string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
 
             EdgeOptions options = new EdgeOptions {
                 BinaryLocation = ConfigurationManager.AppSettings["edgeBinaryPath"]
@@ -57,6 +54,10 @@ namespace SauceDemo.SeleniumUtilities
             options.AddArgument("--disable-features=msUndersideButton");
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
+            
+            AppSettingsSection secrets = loadSecretsConfig();
+            string username = secrets.Settings["username"].Value;
+            string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
             options.AddArgument("user-data-dir=" + profilePath);
 
             return options;
