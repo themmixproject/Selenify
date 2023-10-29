@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace SauceDemo.SeleniumUtilities
 {
-    public static class WebDriverManager
-    {
+    public static class WebDriverManager {
         private static IWebDriver? _driver;
         public static IWebDriver Driver
         {
@@ -18,33 +17,24 @@ namespace SauceDemo.SeleniumUtilities
             {
                 if (_driver == null)
                 {
-                    _driver = GetEdgeDriver();
+                    LoadEdgeDriver();
                 }
 
-                return _driver;
+                return _driver!;
             }
         }
 
-        public static IWebDriver GetEdgeDriver()
-        {
-            string driverPath = "C:\\Webdrivers\\msedgedriver.exe";
-            EdgeOptions options = GetEdgeOptions();
+        public static void LoadEdgeDriver( EdgeOptions? options = null ) {
+            if (options == null) {
+                options = GetDefaultEdgeOptions();
+            }
 
-            return new EdgeDriver(driverPath, options);
-        }
-
-        public static void LoadEdgeDriver()
-        {
             string driverPath = ConfigurationManager.AppSettings["edgeDriverPath"]!;
-
-            EdgeOptions options = GetEdgeOptions();
-
-            _driver = new EdgeDriver(driverPath, options);
+            _driver = new EdgeDriver( driverPath, options );
         }
 
-        private static EdgeOptions GetEdgeOptions()
+        private static EdgeOptions GetDefaultEdgeOptions()
         {
-
             EdgeOptions options = new EdgeOptions {
                 BinaryLocation = ConfigurationManager.AppSettings["edgeBinaryPath"]
             };
@@ -56,8 +46,7 @@ namespace SauceDemo.SeleniumUtilities
             options.AddArgument("--log-level=3");
             
             AppSettingsSection secrets = loadSecretsConfig();
-            string username = secrets.Settings["username"].Value;
-            string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
+            string profilePath = secrets.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
 
             return options;
@@ -81,6 +70,7 @@ namespace SauceDemo.SeleniumUtilities
             if(_driver != null)
             {
                 _driver.Quit();
+                _driver.Dispose();
                 _driver = null;
             }
         }
