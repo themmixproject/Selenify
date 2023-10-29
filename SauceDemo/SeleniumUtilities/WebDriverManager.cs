@@ -35,7 +35,7 @@ namespace SauceDemo.SeleniumUtilities
 
         public static void LoadEdgeDriver()
         {
-            string driverPath = "C:\\Webdrivers\\msedgedriver.exe";
+            string driverPath = ConfigurationManager.AppSettings["edgeDriverPath"]!;
 
             EdgeOptions options = GetEdgeOptions();
 
@@ -48,9 +48,8 @@ namespace SauceDemo.SeleniumUtilities
             string username = secrets.Settings["username"].Value;
             string profilePath = "C:\\Users\\" + username + "\\AppData\\Local\\Microsoft\\Edge\\Test User Data";
 
-            EdgeOptions options = new EdgeOptions
-            {
-                BinaryLocation = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+            EdgeOptions options = new EdgeOptions {
+                BinaryLocation = ConfigurationManager.AppSettings["edgeBinaryPath"]
             };
             options.AddArgument("--no-sandbox"); // If running in a restricted environment
             options.AddArgument("--disable-dev-shm-usage"); // If running in a restricted environment
