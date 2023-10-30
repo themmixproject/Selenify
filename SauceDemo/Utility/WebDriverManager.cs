@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SauceDemo.SeleniumUtilities
+namespace SauceDemo.Utility
 {
     public static class WebDriverManager {
         private static IWebDriver? _driver;
@@ -29,14 +29,20 @@ namespace SauceDemo.SeleniumUtilities
                 options = GetDefaultEdgeOptions();
             }
 
-            string driverPath = ConfigurationManager.AppSettings["edgeDriverPath"]!;
+            string driverPath = System
+                .Configuration
+                .ConfigurationManager
+                .AppSettings["edgeDriverPath"]!;
             _driver = new EdgeDriver( driverPath, options );
         }
 
         private static EdgeOptions GetDefaultEdgeOptions()
         {
             EdgeOptions options = new EdgeOptions {
-                BinaryLocation = ConfigurationManager.AppSettings["edgeBinaryPath"]
+                BinaryLocation = System
+                .Configuration
+                .ConfigurationManager
+                .AppSettings["edgeBinaryPath"]
             };
             options.AddArgument("--no-sandbox"); // If running in a restricted environment
             options.AddArgument("--disable-dev-shm-usage"); // If running in a restricted environment
@@ -45,24 +51,11 @@ namespace SauceDemo.SeleniumUtilities
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
             
-            AppSettingsSection secrets = loadSecretsConfig();
+            AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
             string profilePath = secrets.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
 
             return options;
-        }
-
-        private static AppSettingsSection loadSecretsConfig()
-        {
-            Configuration configuration = ConfigurationManager.OpenMappedExeConfiguration(
-                new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = @".\Config\Secrets.config"
-                },
-                ConfigurationUserLevel.None
-            );
-
-            return configuration.AppSettings;
         }
 
         public static void QuitDriver()

@@ -10,7 +10,8 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static SauceDemo.SeleniumUtilities.WebDriverManager;
+using static SauceDemo.Utility.WebDriverManager;
+using SauceDemo.Utility;
 
 namespace SauceDemo.Processes
 {
@@ -34,9 +35,11 @@ namespace SauceDemo.Processes
 
         private void LoginUser()
         {
-            AppSettingsSection config = loadSecretsConfig();
-            string siteUsername = config.Settings["site_username"].Value;
-            string sitePassword = config.Settings["site_password"].Value;
+            AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
+            string siteUsername = secrets.Settings["site_username"].Value;
+            string sitePassword = secrets.Settings["site_password"].Value;
+
+            Utility.ConfigurationManager.UnloadSecretsConfig();
 
             WebDriverWait loginWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
             loginWait.Until( ExpectedConditions.ElementIsVisible( By.Id( "user-name" ) ) );
@@ -129,19 +132,6 @@ namespace SauceDemo.Processes
                     }
                 }
             }
-        }
-
-        private static AppSettingsSection loadSecretsConfig()
-        {
-            Configuration configuration = ConfigurationManager.OpenMappedExeConfiguration(
-                new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = @".\Config\Secrets.config"
-                },
-                ConfigurationUserLevel.None
-            );
-
-            return configuration.AppSettings;
         }
 
         private ReadOnlyCollection<IWebElement> GetInventoryItems()

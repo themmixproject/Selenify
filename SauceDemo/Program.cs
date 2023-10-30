@@ -6,9 +6,10 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using SauceDemo.Processes;
-using SauceDemo.SeleniumUtilities;
+using SauceDemo.Utility;
 
 internal class Program {
+    public static IWebDriver driver;
     private static void Main( string[] args ) {
         WebDriverManager.LoadEdgeDriver();
 
