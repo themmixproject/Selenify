@@ -10,153 +10,157 @@ using static SauceDemo.Utility.WebDriverManager;
 namespace SauceDemo.Processes
 {
 
-    public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
-    {
-        public class ProcessState
-        {
-            public bool isLoggedIn { get; set; }
-        };
+	public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
+	{
+		public class ProcessState
+		{
+			public bool isLoggedIn { get; set; }
+			public int i { get; set; } = 0;
+		};
 
-        public DownloadSauceImages(): base("Download Sauce Images")
-        {
-            State = new ProcessState();
-        }
+		public DownloadSauceImages() : base( "Download Sauce Images" ) { }
 
-        public void Run()
-        {
-            LoadState();
-            Uri url = new Uri( "https://www.saucedemo.com/" );
-            Driver.Navigate().GoToUrl( url );
+		public void Run()
+		{
+			Uri url = new Uri( "https://www.saucedemo.com/" );
+			Driver.Navigate().GoToUrl( url );
 
-            LoginUser();
+			LoginUser();
 
-            State.isLoggedIn = true;
-            SaveState();
+			State.isLoggedIn = true;
+			SaveState();
 
-            LoopThroughProducts();
+			LoopThroughProducts();
 
-            Driver.Quit();
-        }
+			Driver.Quit();
 
-        private void LoginUser()
-        {
-            AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
-            string siteUsername = secrets.Settings["site_username"].Value;
-            string sitePassword = secrets.Settings["site_password"].Value;
+			ResetState();
+		}
 
-            Utility.ConfigurationManager.UnloadSecretsConfig();
+		private void LoginUser()
+		{
+			AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
+			string siteUsername = secrets.Settings["site_username"].Value;
+			string sitePassword = secrets.Settings["site_password"].Value;
 
-            WebDriverWait loginWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
-            loginWait.Until( ExpectedConditions.ElementIsVisible( By.Id( "user-name" ) ) );
+			Utility.ConfigurationManager.UnloadSecretsConfig();
 
-            IWebElement usernameField = Driver.FindElement( By.Id( "user-name" ) );
-            usernameField.SendKeys( siteUsername );
+			WebDriverWait loginWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
+			loginWait.Until( ExpectedConditions.ElementIsVisible( By.Id( "user-name" ) ) );
 
-            IWebElement passwordField = Driver.FindElement( By.Id( "password" ) );
-            passwordField.SendKeys( sitePassword );
+			IWebElement usernameField = Driver.FindElement( By.Id( "user-name" ) );
+			usernameField.SendKeys( siteUsername );
 
-            IWebElement loginButton = Driver.FindElement( By.Id( "login-button" ) );
-            loginButton.Click();
+			IWebElement passwordField = Driver.FindElement( By.Id( "password" ) );
+			passwordField.SendKeys( sitePassword );
 
-            WebDriverWait inventoryHeaderWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
-            inventoryHeaderWait.Until(
-                ExpectedConditions.ElementExists(
-                    By.XPath( "//*[@id='header_container']/div[1]/div[2]/div" )
-                )
-            );
-        }
+			IWebElement loginButton = Driver.FindElement( By.Id( "login-button" ) );
+			loginButton.Click();
 
-        private void LoopThroughProducts()
-        {
-            ReadOnlyCollection<IWebElement> inventoryItems = GetInventoryItems();
-            for (int i = 0; i < inventoryItems.Count; i++)
-            {
-                IWebElement inventoryItem = inventoryItems[i];
+			WebDriverWait inventoryHeaderWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
+			inventoryHeaderWait.Until(
+				ExpectedConditions.ElementExists(
+					By.XPath( "//*[@id='header_container']/div[1]/div[2]/div" )
+				)
+			);
+		}
 
-                if (ElementIsStale( inventoryItem ))
-                {
-                    inventoryItems = GetInventoryItems();
-                    inventoryItem = inventoryItems[i];
-                }
+		private void LoopThroughProducts()
+		{
+			ReadOnlyCollection<IWebElement> inventoryItems = GetInventoryItems();
 
-                IWebElement inventoryItemLink = inventoryItem
-                    .FindElement( By.ClassName( "inventory_item_label" ) )
-                    .FindElement( By.TagName( "a" ) );
-                inventoryItemLink.Click();
+			for (; State.i < inventoryItems.Count; State.i++)
+			{
+				IWebElement inventoryItem = inventoryItems[State.i];
 
-                SaveInventoryItemImage();
+				if (ElementIsStale( inventoryItem ))
+				{
+					inventoryItems = GetInventoryItems();
+					inventoryItem = inventoryItems[State.i];
+				}
 
-                Driver.Navigate().Back();
-            }
-        }
+				IWebElement inventoryItemLink = inventoryItem
+					.FindElement( By.ClassName( "inventory_item_label" ) )
+					.FindElement( By.TagName( "a" ) );
+				inventoryItemLink.Click();
 
-        private void SaveInventoryItemImage()
-        {
-            IWebElement inventoryImage = Driver
-                .FindElement( By.Id( "inventory_item_container" ) )
-                .FindElement( By.ClassName( "inventory_details_img" ) );
+				SaveInventoryItemImage();
 
-            string imageSource = inventoryImage.GetAttribute( "src" );
-            string imageName = Path.GetFileName( imageSource );
+				Driver.Navigate().Back();
 
-            CreateDownloadsFolder();
+				Thread.Sleep( 5000 );
 
-            string savePath = GetProjectDirectoryPath() + "\\Downloads";
-            DownloadFileToDirectory( imageSource, savePath, imageName );
-        }
+				SaveState();
+			}
+		}
 
-        private void CreateDownloadsFolder()
-        {
-            string path = GetProjectDirectoryPath() + "\\Downloads";
+		private void SaveInventoryItemImage()
+		{
+			IWebElement inventoryImage = Driver
+				.FindElement( By.Id( "inventory_item_container" ) )
+				.FindElement( By.ClassName( "inventory_details_img" ) );
 
-            if (!Directory.Exists( path ))
-            {
-                Directory.CreateDirectory( path );
-            }
-        }
+			string imageSource = inventoryImage.GetAttribute( "src" );
+			string imageName = Path.GetFileName( imageSource );
 
-        private string GetProjectDirectoryPath()
-        {
-            return Directory.GetParent(
-                Directory.GetCurrentDirectory()!
-            )!.Parent!.Parent!.FullName;
-        }
+			CreateDownloadsFolder();
 
-        private async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync( fileUrl );
+			string savePath = GetProjectDirectoryPath() + "\\Downloads";
+			DownloadFileToDirectory( imageSource, savePath, imageName );
+		}
 
-                using (Stream memoryStream = await response.Content.ReadAsStreamAsync())
-                {
-                    string savePath = Path.Combine( path, fileName );
-                    using (FileStream fileStream = File.Create( savePath ))
-                    {
-                        memoryStream.CopyTo( fileStream );
-                    }
-                }
-            }
-        }
+		private void CreateDownloadsFolder()
+		{
+			string path = GetProjectDirectoryPath() + "\\Downloads";
 
-        private ReadOnlyCollection<IWebElement> GetInventoryItems()
-        {
-            return Driver
-                .FindElement( By.Id( "inventory_container" ) )
-                .FindElements( By.CssSelector( ".inventory_item" ) );
-        }
+			if (!Directory.Exists( path ))
+			{
+				Directory.CreateDirectory( path );
+			}
+		}
 
-        private bool ElementIsStale( IWebElement element )
-        {
-            try
-            {
-                bool _ = element.Displayed;
-                return false;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return true;
-            }
-        }
-    }
+		private string GetProjectDirectoryPath()
+		{
+			return Directory.GetParent(
+				Directory.GetCurrentDirectory()!
+			)!.Parent!.Parent!.FullName;
+		}
+
+		private async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
+		{
+			using (HttpClient client = new HttpClient())
+			{
+				HttpResponseMessage response = await client.GetAsync( fileUrl );
+
+				using (Stream memoryStream = await response.Content.ReadAsStreamAsync())
+				{
+					string savePath = Path.Combine( path, fileName );
+					using (FileStream fileStream = File.Create( savePath ))
+					{
+						memoryStream.CopyTo( fileStream );
+					}
+				}
+			}
+		}
+
+		private ReadOnlyCollection<IWebElement> GetInventoryItems()
+		{
+			return Driver
+				.FindElement( By.Id( "inventory_container" ) )
+				.FindElements( By.CssSelector( ".inventory_item" ) );
+		}
+
+		private bool ElementIsStale( IWebElement element )
+		{
+			try
+			{
+				bool _ = element.Displayed;
+				return false;
+			}
+			catch (StaleElementReferenceException)
+			{
+				return true;
+			}
+		}
+	}
 }
