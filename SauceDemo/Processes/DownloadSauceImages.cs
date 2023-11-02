@@ -1,33 +1,38 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools.V116.Target;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SauceDemo.Interfaces;
 using SeleniumExtras.WaitHelpers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SauceDemo.Utility.WebDriverManager;
-using SauceDemo.Utility;
 
 namespace SauceDemo.Processes
 {
 
-    public class DownloadSauceImages : IProcessBase
+    public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
     {
-        public string ProcessName { get; set; } = "Download Sauce Images";
-        private class ProcessState {
+        public class ProcessState
+        {
+            public bool isLoggedIn { get; set; }
         };
-        private ProcessState state { get; set; } = new ProcessState();
+
+        public DownloadSauceImages(): base("Download Sauce Images")
+        {
+            State = new ProcessState();
+        }
+
         public void Run()
         {
+            LoadState();
             Uri url = new Uri( "https://www.saucedemo.com/" );
             Driver.Navigate().GoToUrl( url );
 
             LoginUser();
+
+            State.isLoggedIn = true;
+            SaveState();
+
             LoopThroughProducts();
 
             Driver.Quit();
@@ -47,7 +52,7 @@ namespace SauceDemo.Processes
             IWebElement usernameField = Driver.FindElement( By.Id( "user-name" ) );
             usernameField.SendKeys( siteUsername );
 
-            IWebElement passwordField = Driver.FindElement(By.Id( "password" ) );
+            IWebElement passwordField = Driver.FindElement( By.Id( "password" ) );
             passwordField.SendKeys( sitePassword );
 
             IWebElement loginButton = Driver.FindElement( By.Id( "login-button" ) );
@@ -64,7 +69,7 @@ namespace SauceDemo.Processes
         private void LoopThroughProducts()
         {
             ReadOnlyCollection<IWebElement> inventoryItems = GetInventoryItems();
-            for (int i = 0; i <inventoryItems.Count; i++)
+            for (int i = 0; i < inventoryItems.Count; i++)
             {
                 IWebElement inventoryItem = inventoryItems[i];
 
@@ -104,7 +109,7 @@ namespace SauceDemo.Processes
         {
             string path = GetProjectDirectoryPath() + "\\Downloads";
 
-            if(!Directory.Exists( path ))
+            if (!Directory.Exists( path ))
             {
                 Directory.CreateDirectory( path );
             }
@@ -117,7 +122,7 @@ namespace SauceDemo.Processes
             )!.Parent!.Parent!.FullName;
         }
 
-        private async void DownloadFileToDirectory(string fileUrl,  string path, string fileName )
+        private async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
         {
             using (HttpClient client = new HttpClient())
             {
@@ -126,7 +131,7 @@ namespace SauceDemo.Processes
                 using (Stream memoryStream = await response.Content.ReadAsStreamAsync())
                 {
                     string savePath = Path.Combine( path, fileName );
-                    using (FileStream fileStream  = File.Create(savePath))
+                    using (FileStream fileStream = File.Create( savePath ))
                     {
                         memoryStream.CopyTo( fileStream );
                     }
@@ -141,7 +146,7 @@ namespace SauceDemo.Processes
                 .FindElements( By.CssSelector( ".inventory_item" ) );
         }
 
-        private bool ElementIsStale(IWebElement element )
+        private bool ElementIsStale( IWebElement element )
         {
             try
             {
