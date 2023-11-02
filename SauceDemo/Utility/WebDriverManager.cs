@@ -1,11 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SauceDemo.Utility
 {
@@ -51,7 +46,7 @@ namespace SauceDemo.Utility
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
             
-            AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
+            AppSettingsSection secrets = ConfigurationManager.Secrets;
             string profilePath = secrets.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
 
