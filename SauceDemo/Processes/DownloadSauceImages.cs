@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using SauceDemo.Interfaces;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -20,7 +19,7 @@ namespace SauceDemo.Processes
 
 		public DownloadSauceImages() : base( "Download Sauce Images" ) { }
 
-		public void Run()
+		public override void Run()
 		{
 			Uri url = new Uri( "https://www.saucedemo.com/" );
 			Driver.Navigate().GoToUrl( url );

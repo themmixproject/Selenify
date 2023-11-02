@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SauceDemo.Processes
 {
-    public class ProcessBase<T>
+    public abstract class ProcessBase<T> : IProcessBase
     {
         public string ProcessName { get; set; } = string.Empty;
         public T State { get; set; } = default!;
@@ -15,6 +15,8 @@ namespace SauceDemo.Processes
         private string RunningProcessesDir = Directory.GetParent(
                 Directory.GetCurrentDirectory()!
             )!.Parent!.Parent!.FullName + "\\RunningProcesses\\";
+
+        public abstract void Run();
 
         public ProcessBase( string processName )
         {
