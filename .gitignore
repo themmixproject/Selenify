@@ -367,3 +367,6 @@ SauceDemo/Config/Secrets.config
 
 # Test download file store
 SauceDemo/Downloads/
+
+# Process state store
+SauceDemo/RunningProcesses
