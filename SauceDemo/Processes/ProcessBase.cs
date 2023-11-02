@@ -42,6 +42,12 @@ namespace SauceDemo.Processes
             State = Newtonsoft.Json.JsonConvert.DeserializeObject<T>( stateFile )!;
         }
 
+        public void ResetState()
+        {
+            State = Activator.CreateInstance<T>();
+            SaveState();
+        }
+
         private void CreateStateFile()
         {
             string stateFileName = ProcessName.Replace( " ", "" ) + ".state.json";
