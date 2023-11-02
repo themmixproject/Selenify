@@ -9,7 +9,6 @@ using SauceDemo.Processes;
 using SauceDemo.Utility;
 
 internal class Program {
-    public static IWebDriver driver;
     private static void Main( string[] args ) {
         WebDriverManager.LoadEdgeDriver();
 
