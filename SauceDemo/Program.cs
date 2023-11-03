@@ -10,10 +10,13 @@ using SauceDemo.Utility;
 
 internal class Program {
     private static void Main( string[] args ) {
-        WebDriverManager.LoadEdgeDriver();
+        //WebDriverManager.LoadEdgeDriver();
 
-        DownloadSauceImages process = new DownloadSauceImages();
-        process.Run();
+        ProcessSelector.GetProcesses();
+
+
+        //DownloadSauceImages process = new DownloadSauceImages();
+        //process.Run();
         Console.WriteLine( "Hello, World!" );
     }
 }
