@@ -60,11 +60,10 @@ namespace SauceDemo.Processes
                 return;
             }
 
-            if (!File.Exists( stateFilePath ))
-            {
-                File.Create( stateFilePath );
+            if (!File.Exists( stateFilePath )) {
+                using (File.Create( stateFilePath )) { }
             }
-            if(new FileInfo( stateFilePath).Length == 0)
+            if (new FileInfo( stateFilePath).Length == 0)
             {
                 State = Activator.CreateInstance<T>();
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject( State );
