@@ -1,4 +1,5 @@
-﻿using SauceDemo.Processes;
+﻿using OpenQA.Selenium.Internal;
+using SauceDemo.Processes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,45 +36,19 @@ namespace SauceDemo.Utility
             int currentOptionIndex = 0;
             
             int GetNextOptionIndex() {
-                int selectedIndex = currentOptionIndex;
-                selectedIndex += 1;
-
-                if (selectedIndex > processesCount - 1) {
-                    selectedIndex = 0;
-                }
-
-                return selectedIndex;
+                return (currentOptionIndex + 1) % processesCount;
             }
 
             int GetPreviousOptionIndex() {
-                int selectedIndex = currentOptionIndex;
-                selectedIndex -= 1;
-
-                if (selectedIndex < 0) {
-                    selectedIndex = processesCount - 1;
-                }
-
-                return selectedIndex;
+                return (currentOptionIndex - 1) % processesCount;
             }
 
-            int countStringLength = processes.Count.ToString()
-                .Length;
             bool userHasNotConfirmed = true;
             while( userHasNotConfirmed ) {
-                string headerString = "Select a process <" + 
-                    (currentOptionIndex + 1)
-                        .ToString()
-                        .PadLeft(countStringLength) +
-                    "/" + 
-                    processesCount + "> :\n";
-                string processName = processes[currentOptionIndex].ProcessName;
-                string footer = "\n\nPress enter to continue.";
-                string uiString = headerString + processName + footer;
-                ConsoleUI.Write( uiString );
+                DisplayUI(processes, currentOptionIndex);
 
                 ConsoleKeyInfo key = Console.ReadKey();
                 ConsoleKey keyCode = key.Key;
-
 
                 if (keyCode == ConsoleKey.LeftArrow) {
                     currentOptionIndex = GetPreviousOptionIndex();
@@ -95,6 +70,18 @@ namespace SauceDemo.Utility
             }
 
             return null;
+        }
+
+        private static void DisplayUI(List<IProcessBase> processes, int optionIndex) {
+            int countStringLength = processes.Count.ToString().Length;
+
+            string headerString = $"Select a process <{(optionIndex + 1)
+                .ToString()
+                .PadLeft( countStringLength )}/{processes.Count}> :\n";
+            string processName = processes[optionIndex].ProcessName;
+            string footer = "\n\nPress enter to continue.";
+            string uiString = headerString + processName + footer;
+            ConsoleUI.Write( uiString );
         }
     }
 }
