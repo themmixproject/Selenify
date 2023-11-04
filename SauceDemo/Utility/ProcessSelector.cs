@@ -57,13 +57,11 @@ namespace SauceDemo.Utility
                     currentOptionIndex = GetNextOptionIndex();
                 }
                 else if (keyCode == ConsoleKey.Enter) {
-                    ConsoleUI.Clear();
-                    ConsoleUI.Stop();
+                    ConsoleUI.Reset();
                     return processes[currentOptionIndex];
                 }
                 else if (keyCode == ConsoleKey.Escape ) {
-                    ConsoleUI.Clear();
-                    ConsoleUI.Stop();
+                    ConsoleUI.Reset();
                     userHasNotConfirmed = false;
                 }
             }

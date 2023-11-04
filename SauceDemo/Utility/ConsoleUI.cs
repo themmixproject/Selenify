@@ -36,5 +36,10 @@ namespace SauceDemo.Utility {
             startLine = 0;
             endLine = 0;
         }
+
+        public static void Reset() {
+            Clear();
+            Stop();
+        }
     }
 }
