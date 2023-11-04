@@ -57,7 +57,6 @@ namespace SauceDemo.Utility
                     currentOptionIndex = GetNextOptionIndex();
                 }
                 else if (keyCode == ConsoleKey.Enter) {
-                    userHasNotConfirmed = false;
                     ConsoleUI.Clear();
                     ConsoleUI.Stop();
                     return processes[currentOptionIndex];
