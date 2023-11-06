@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SauceDemo.Processes
+namespace Selenify.Processes
 {
-    public class ProcessBase<T>
+    public abstract class ProcessBase<T> : IProcessBase
     {
         public string ProcessName { get; set; } = string.Empty;
         public T State { get; set; } = default!;
@@ -15,6 +15,8 @@ namespace SauceDemo.Processes
         private string RunningProcessesDir = Directory.GetParent(
                 Directory.GetCurrentDirectory()!
             )!.Parent!.Parent!.FullName + "\\RunningProcesses\\";
+
+        public abstract void Run();
 
         public ProcessBase( string processName )
         {
@@ -42,6 +44,12 @@ namespace SauceDemo.Processes
             State = Newtonsoft.Json.JsonConvert.DeserializeObject<T>( stateFile )!;
         }
 
+        public void ResetState()
+        {
+            State = Activator.CreateInstance<T>();
+            SaveState();
+        }
+
         private void CreateStateFile()
         {
             string stateFileName = ProcessName.Replace( " ", "" ) + ".state.json";
@@ -52,11 +60,10 @@ namespace SauceDemo.Processes
                 return;
             }
 
-            if (!File.Exists( stateFilePath ))
-            {
-                File.Create( stateFilePath );
+            if (!File.Exists( stateFilePath )) {
+                using (File.Create( stateFilePath )) { }
             }
-            if(new FileInfo( stateFilePath).Length == 0)
+            if (new FileInfo( stateFilePath).Length == 0)
             {
                 State = Activator.CreateInstance<T>();
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject( State );

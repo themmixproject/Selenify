@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SauceDemo", "SauceDemo\SauceDemo.csproj", "{2B218937-82CF-4872-B2AF-EA90ADA7E75D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenify", "Selenify\Selenify.csproj", "{2B218937-82CF-4872-B2AF-EA90ADA7E75D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

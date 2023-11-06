@@ -363,10 +363,10 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Secrets
-SauceDemo/Config/Secrets.config
+Selenify/Config/Secrets.config
 
 # Test download file store
-SauceDemo/Downloads/
+Selenify/Downloads/
 
 # Process state store
-SauceDemo/RunningProcesses
+Selenify/RunningProcesses
