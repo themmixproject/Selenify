@@ -78,7 +78,7 @@ namespace Selenify.Utility
             string processName = processes[optionIndex].ProcessName;
             string footer = "\n\nPress enter to continue.";
             string uiString = headerString + processName + footer;
-            ConsoleUI.Write( uiString );
+            ConsoleUI.WriteLines( uiString );
         }
     }
 }

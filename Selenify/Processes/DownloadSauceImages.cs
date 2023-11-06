@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Selenify.Utility;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -87,7 +88,7 @@ namespace Selenify.Processes
 
 				Driver.Navigate().Back();
 
-				Thread.Sleep( 5000 );
+				Thread.Sleep( 500 );
 
 				SaveState();
 			}
