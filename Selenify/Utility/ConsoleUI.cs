@@ -48,6 +48,11 @@ namespace Selenify.Utility
 
         public static void UpdateLine(int index, string text)
         {
+            while (index >= lines.Count)
+            {
+                lines.Add("");
+            }
+
             var newLines = text.Split('\n');
             lines.RemoveAt(index);
             lines.InsertRange(index, newLines);
@@ -57,6 +62,8 @@ namespace Selenify.Utility
             Console.Write(new string(' ', Console.BufferWidth));
             Console.SetCursorPosition(0, startLine + index);
             Console.Write(lines[index]);
+
+            endLine = startLine + lines.Count;
 
             Console.SetCursorPosition(0, endLine);
         }
