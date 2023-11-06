@@ -2,7 +2,7 @@
 using OpenQA.Selenium.Edge;
 using System.Configuration;
 
-namespace SauceDemo.Utility
+namespace Selenify.Utility
 {
     public static class WebDriverManager {
         private static IWebDriver? _driver;

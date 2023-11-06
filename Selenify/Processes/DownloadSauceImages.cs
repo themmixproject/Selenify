@@ -4,9 +4,9 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using static SauceDemo.Utility.WebDriverManager;
+using static Selenify.Utility.WebDriverManager;
 
-namespace SauceDemo.Processes
+namespace Selenify.Processes
 {
 
 	public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>

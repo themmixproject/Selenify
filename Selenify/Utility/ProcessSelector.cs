@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium.Internal;
-using SauceDemo.Processes;
+using Selenify.Processes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SauceDemo.Utility
+namespace Selenify.Utility
 {
     public static class ProcessSelector
     {

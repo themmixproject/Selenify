@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SauceDemo.Utility {
+namespace Selenify.Utility {
     public static class ConsoleUI {
         private static int startLine = 0;
         private static int endLine = 0;

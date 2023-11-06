@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SauceDemo.Processes
+namespace Selenify.Processes
 {
     public abstract class ProcessBase<T> : IProcessBase
     {
