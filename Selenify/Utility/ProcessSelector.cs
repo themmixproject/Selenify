@@ -40,7 +40,8 @@ namespace Selenify.Utility
             }
 
             int GetPreviousOptionIndex() {
-                return (currentOptionIndex - 1) % processesCount;
+                int index = (currentOptionIndex - 1) % processesCount;
+                return index >= 0 ? index : index + processesCount;
             }
 
             bool userHasNotConfirmed = true;
@@ -76,9 +77,10 @@ namespace Selenify.Utility
                 .ToString()
                 .PadLeft( countStringLength )}/{processes.Count}> :\n";
             string processName = processes[optionIndex].ProcessName;
-            string footer = "\n\nPress enter to continue.";
+            string footer = "\n\nPress enter to continue.\n" +
+                "Use the arrow keys to select a proces.";
             string uiString = headerString + processName + footer;
-            ConsoleUI.WriteLines( uiString );
+            ConsoleUI.WriteLine( uiString );
         }
     }
 }
