@@ -18,9 +18,9 @@ namespace Selenify.Utility
             lines = texts.SelectMany(text => text.Split('\n')).ToList();
             foreach (var line in lines)
             {
-                Console.WriteLine(line);
+                System.Console.WriteLine(line);
             }
-            endLine = Console.CursorTop;
+            endLine = System.Console.CursorTop;
         }
 
         public static void WriteLine(string text)
@@ -30,9 +30,9 @@ namespace Selenify.Utility
             lines = new List<string>(newLines);
             foreach (var line in newLines)
             {
-                Console.WriteLine(line);
+                System.Console.WriteLine(line);
             }
-            endLine = Console.CursorTop;
+            endLine = System.Console.CursorTop;
         }
 
         public static void AppendLine(string text)
@@ -41,9 +41,9 @@ namespace Selenify.Utility
             lines.AddRange(newLines);
             foreach (var line in newLines)
             {
-                Console.WriteLine(line);
+                System.Console.WriteLine(line);
             }
-            endLine = Console.CursorTop;
+            endLine = System.Console.CursorTop;
         }
 
         public static void UpdateLine(int index, string text)
@@ -57,33 +57,33 @@ namespace Selenify.Utility
             lines.RemoveAt(index);
             lines.InsertRange(index, newLines);
 
-            Console.SetCursorPosition(0, startLine + index);
+            System.Console.SetCursorPosition(0, startLine + index);
 
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, startLine + index);
-            Console.Write(lines[index]);
+            System.Console.Write(new string(' ', System.Console.BufferWidth));
+            System.Console.SetCursorPosition(0, startLine + index);
+            System.Console.Write(lines[index]);
 
             endLine = startLine + lines.Count;
 
-            Console.SetCursorPosition(0, endLine);
+            System.Console.SetCursorPosition(0, endLine);
         }
 
         public static void Clear()
         {
             if (startLine < endLine)
             {
-                Console.SetCursorPosition(0, startLine);
+                System.Console.SetCursorPosition(0, startLine);
 
                 for (int i = startLine; i < endLine; i++)
                 {
-                    Console.Write(new string(' ', Console.BufferWidth));
+                    System.Console.Write(new string(' ', System.Console.BufferWidth));
                     if (i < endLine - 1)
                     {
-                        Console.WriteLine();
+                        System.Console.WriteLine();
                     }
                 }
 
-                Console.SetCursorPosition(0, startLine);
+                System.Console.SetCursorPosition(0, startLine);
             }
             lines.Clear();
             startLine = 0;

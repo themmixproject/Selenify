@@ -48,7 +48,7 @@ namespace Selenify.Utility
             while( userHasNotConfirmed ) {
                 DisplayUI(processes, currentOptionIndex);
 
-                ConsoleKeyInfo key = Console.ReadKey();
+                ConsoleKeyInfo key = System.Console.ReadKey();
                 ConsoleKey keyCode = key.Key;
 
                 if (keyCode == ConsoleKey.LeftArrow) {
