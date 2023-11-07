@@ -30,36 +30,45 @@ namespace Selenify.Utility
             return processes;
         }
 
+        private static int SelectedIndex = 0;
+        private static List<IProcessBase> Processes = GetProcesses();
+        private static readonly int ProcessCount = Processes.Count;
+
+        private static int GetNextOptionIndex()
+        {
+            return (SelectedIndex + 1) % ProcessCount;
+        }
+
+        private static int GetPreviousOptionIndex()
+        {
+            int index = (SelectedIndex - 1) % ProcessCount;
+            if (index >= 0)
+            {
+                return index;
+            }
+            else
+            {
+                return index + ProcessCount;
+            }
+        }
+
         public static IProcessBase? SelectProcess() {
-            List<IProcessBase> processes = GetProcesses();
-            int processesCount = processes.Count;
-            int currentOptionIndex = 0;
-            
-            int GetNextOptionIndex() {
-                return (currentOptionIndex + 1) % processesCount;
-            }
-
-            int GetPreviousOptionIndex() {
-                int index = (currentOptionIndex - 1) % processesCount;
-                return index >= 0 ? index : index + processesCount;
-            }
-
             bool userHasNotConfirmed = true;
             while( userHasNotConfirmed ) {
-                DisplayUI(processes, currentOptionIndex);
+                DisplayUI();
 
                 ConsoleKeyInfo key = System.Console.ReadKey();
                 ConsoleKey keyCode = key.Key;
 
                 if (keyCode == ConsoleKey.LeftArrow) {
-                    currentOptionIndex = GetPreviousOptionIndex();
+                    SelectedIndex = GetPreviousOptionIndex();
                 }
                 else if (keyCode == ConsoleKey.RightArrow) {
-                    currentOptionIndex = GetNextOptionIndex();
+                    SelectedIndex = GetNextOptionIndex();
                 }
                 else if (keyCode == ConsoleKey.Enter) {
                     ConsoleUI.Reset();
-                    return processes[currentOptionIndex];
+                    return Processes[SelectedIndex];
                 }
                 else if (keyCode == ConsoleKey.Escape ) {
                     ConsoleUI.Reset();
@@ -70,17 +79,17 @@ namespace Selenify.Utility
             return null;
         }
 
-        private static void DisplayUI(List<IProcessBase> processes, int optionIndex) {
-            int countStringLength = processes.Count.ToString().Length;
+        private static void DisplayUI() {
+            int countStringLength = ProcessCount.ToString().Length;
 
-            string headerString = $"Select a process <{(optionIndex + 1)
+            string headerString = $"Select a process <{(SelectedIndex + 1)
                 .ToString()
-                .PadLeft( countStringLength )}/{processes.Count}> :\n";
-            string processName = processes[optionIndex].ProcessName;
+                .PadLeft( countStringLength )}/{ProcessCount}> :\n";
+            string processName = Processes[SelectedIndex].ProcessName;
             string footer = "\n\nPress enter to continue.\n" +
                 "Use the arrow keys to select a proces.";
             string uiString = headerString + processName + footer;
-            ConsoleUI.WriteLine( uiString );
+            Console.UI.WriteLine( uiString );
         }
     }
 }
