@@ -1,4 +1,4 @@
-using OpenQA.Selenium.Internal;
+﻿using OpenQA.Selenium.Internal;
 using Selenify.Processes;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,9 @@ namespace Selenify.Utility
 
                 ConsoleKeyInfo key = System.Console.ReadKey();
                 ConsoleKey keyCode = key.Key;
-                HandleReadKey( keyCode );
+
+                SelectedIndex = GetNewSelectedIndex(keyCode);
+                UserHasNotConfirmed = HandleUserConfirmation(keyCode);
 
                 if ( !UserHasNotConfirmed )
                 {
@@ -58,25 +60,50 @@ namespace Selenify.Utility
             return null;
         }
 
-        private static void HandleReadKey(ConsoleKey key)
+        private static int? GetNewSelectedIndex(ConsoleKey key)
         {
             if (key == ConsoleKey.LeftArrow)
             {
                 SelectedIndex = GetPreviousOptionIndex();
             }
-            else if (key== ConsoleKey.RightArrow)
+            else if (key == ConsoleKey.RightArrow)
             {
                 SelectedIndex = GetNextOptionIndex();
             }
-            else if (key == ConsoleKey.Enter)
+            else if ( key == ConsoleKey.Escape)
             {
-                UserHasNotConfirmed = false;
+                SelectedIndex = null;
             }
-            else if (key == ConsoleKey.Escape)
+
+            return SelectedIndex;
+        }
+
+        private static int GetNextOptionIndex()
+        {
+            return (SelectedIndex!.Value + 1) % ProcessCount;
+        }
+
+        private static int GetPreviousOptionIndex()
+        {
+            int index = (SelectedIndex!.Value - 1) % ProcessCount;
+            if (index >= 0)
             {
-                UserHasNotConfirmed = false;
-                SelectedIndex = 0;
+                return index;
             }
+            else
+            {
+                return index + ProcessCount;
+            }
+        }
+
+        private static bool HandleUserConfirmation(ConsoleKey key)
+        {
+            if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static void DisplayUI() {
