@@ -12,9 +12,18 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Selenify.Utility
 {
-    public static class UserProcessSelectionHandler
+    public class UserProcessSelectionHandler
     {
-        private static List<IProcessBase> GetProcesses()
+        private List<IProcessBase> Processes;
+        private readonly int ProcessCount;
+
+        public UserProcessSelectionHandler()
+        {
+            Processes = GetProcesses();
+            ProcessCount = Processes.Count;
+        }
+
+        private List<IProcessBase> GetProcesses()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes()
@@ -31,9 +40,7 @@ namespace Selenify.Utility
             return processes;
         }
 
-        private static List<IProcessBase> Processes { get; set; } = GetProcesses();
-        private static readonly int ProcessCount = Processes.Count;
-        public static IProcessBase? UserSelectProcess() {
+        public IProcessBase? UserSelectProcess() {
             bool userHasConfirmed = false;
             int? selectedIndex = 0;
             
@@ -54,7 +61,7 @@ namespace Selenify.Utility
             return null;
         }
 
-        private static void DisplayUI(int? selectedIndex)
+        private void DisplayUI(int? selectedIndex)
         {
             int countStringLength = ProcessCount.ToString().Length;
 
@@ -68,7 +75,7 @@ namespace Selenify.Utility
             Console.UI.WriteLine(uiString);
         }
 
-        private static int? GetNewSelectedIndex(ConsoleKey key, int? oldIndex)
+        private int? GetNewSelectedIndex(ConsoleKey key, int? oldIndex)
         {
             int? newIndex = 0;
 
@@ -88,12 +95,12 @@ namespace Selenify.Utility
             return newIndex;
         }
 
-        private static int GetNextOptionIndex(int? index)
+        private int GetNextOptionIndex(int? index)
         {
             return (index!.Value + 1) % ProcessCount;
         }
 
-        private static int GetPreviousOptionIndex(int? index)
+        private int GetPreviousOptionIndex(int? index)
         {
             int newIndex = (index!.Value - 1) % ProcessCount;
             if (newIndex >= 0)
@@ -106,7 +113,7 @@ namespace Selenify.Utility
             }
         }
 
-        private static bool IsUserSelectionConfirmed(ConsoleKey key)
+        private bool IsUserSelectionConfirmed(ConsoleKey key)
         {
             if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
             {
@@ -116,7 +123,7 @@ namespace Selenify.Utility
             return false;
         }
 
-        private static IProcessBase? GetSelectedProcess(int? selectedIndex)
+        private IProcessBase? GetSelectedProcess(int? selectedIndex)
         {
             if (selectedIndex == null)
             {

@@ -10,7 +10,12 @@ using Selenify.Utility;
 
 internal class Program {
     private static void Main( string[] args ) {
-        IProcessBase selectedProcess = UserProcessSelectionHandler.UserSelectProcess()!;
-        selectedProcess.Run();
+        IProcessBase? selectedProcess = new UserProcessSelectionHandler()
+            .UserSelectProcess();
+
+        if ( selectedProcess != null )
+        {
+            selectedProcess.Run();
+        }
     }
 }
