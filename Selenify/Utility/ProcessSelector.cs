@@ -31,68 +31,69 @@ namespace Selenify.Utility
             return processes;
         }
 
-        private static int? SelectedIndex { get; set; } = 0;
         private static List<IProcessBase> Processes { get; set; } = GetProcesses();
         private static readonly int ProcessCount = Processes.Count;
-        private static bool UserHasNotConfirmed { get; set; } = true;
-
         public static IProcessBase? SelectProcess() {
-            while( UserHasNotConfirmed ) {
-                DisplayUI();
+            bool userHasNotConfirmed = true;
+            int? selectedIndex = 0;
+            
+            while( userHasNotConfirmed ) {
+                DisplayUI(selectedIndex);
 
-                ConsoleKeyInfo key = System.Console.ReadKey();
-                ConsoleKey keyCode = key.Key;
+                ConsoleKey key = System.Console.ReadKey().Key;
+                selectedIndex = GetNewSelectedIndex(key, selectedIndex);
+                userHasNotConfirmed = HandleUserConfirmation(key);
 
-                SelectedIndex = GetNewSelectedIndex(keyCode);
-                UserHasNotConfirmed = HandleUserConfirmation(keyCode);
-
-                if ( !UserHasNotConfirmed )
+                if ( !userHasNotConfirmed )
                 {
                     Console.UI.Reset();
-                    if (SelectedIndex == null) {
+                    if (selectedIndex == null)
+                    {
                         return null;
                     }
 
-                    return Processes[SelectedIndex!.Value];
+                    return Processes[selectedIndex!.Value];
                 }
             }
 
             return null;
         }
 
-        private static int? GetNewSelectedIndex(ConsoleKey key)
+        private static int? GetNewSelectedIndex(ConsoleKey key, int? oldIndex)
         {
+            int? newIndex = 0;
+
             if (key == ConsoleKey.LeftArrow)
             {
-                SelectedIndex = GetPreviousOptionIndex();
+                newIndex = GetPreviousOptionIndex(oldIndex);
             }
             else if (key == ConsoleKey.RightArrow)
             {
-                SelectedIndex = GetNextOptionIndex();
+                newIndex = GetNextOptionIndex(oldIndex);
             }
             else if ( key == ConsoleKey.Escape)
             {
-                SelectedIndex = null;
+                newIndex = null;
             }
 
-            return SelectedIndex;
+            return newIndex;
         }
 
-        private static int GetNextOptionIndex()
+        private static int GetNextOptionIndex(int? index)
         {
-            return (SelectedIndex!.Value + 1) % ProcessCount;
+            return (index!.Value + 1) % ProcessCount;
         }
 
-        private static int GetPreviousOptionIndex()
+        private static int GetPreviousOptionIndex(int? index)
         {
-            int index = (SelectedIndex!.Value - 1) % ProcessCount;
-            if (index >= 0)
+            int newIndex = (index!.Value - 1) % ProcessCount;
+            if (newIndex >= 0)
             {
-                return index;
+                return newIndex;
             }
             else
             {
-                return index + ProcessCount;
+                return newIndex + ProcessCount;
             }
         }
 
@@ -106,13 +107,13 @@ namespace Selenify.Utility
             return true;
         }
 
-        private static void DisplayUI() {
+        private static void DisplayUI(int? selectedIndex) {
             int countStringLength = ProcessCount.ToString().Length;
 
-            string headerString = $"Select a process <{(SelectedIndex!.Value + 1)
+            string headerString = $"Select a process <{(selectedIndex!.Value + 1)
                 .ToString()
                 .PadLeft( countStringLength )}/{ProcessCount}> :\n";
-            string processName = Processes[SelectedIndex!.Value].ProcessName;
+            string processName = Processes[selectedIndex!.Value].ProcessName;
             string footer = "\n\nPress enter to continue.\n" +
                 "Use the arrow keys to select a proces.";
             string uiString = headerString + processName + footer;
