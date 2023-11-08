@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Utility
+namespace Selenify.Configurations
 {
     public static class ConfigurationManager
     {

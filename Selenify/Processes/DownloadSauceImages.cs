@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using Selenify.Utility;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -10,7 +9,7 @@ using static Selenify.Utility.WebDriverManager;
 namespace Selenify.Processes
 {
 
-	public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
+    public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
 	{
 		public class ProcessState
 		{
@@ -39,11 +38,11 @@ namespace Selenify.Processes
 
 		private void LoginUser()
 		{
-			AppSettingsSection secrets = Utility.ConfigurationManager.Secrets;
+			AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
 			string siteUsername = secrets.Settings["site_username"].Value;
 			string sitePassword = secrets.Settings["site_password"].Value;
 
-			Utility.ConfigurationManager.UnloadSecretsConfig();
+			Configurations.ConfigurationManager.UnloadSecretsConfig();
 
 			WebDriverWait loginWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
 			loginWait.Until( ExpectedConditions.ElementIsVisible( By.Id( "user-name" ) ) );

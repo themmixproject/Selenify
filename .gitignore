@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Secrets
-Selenify/Config/Secrets.config
+Selenify/Configurations/Secrets.config
 
 # Test download file store
 Selenify/Downloads/
