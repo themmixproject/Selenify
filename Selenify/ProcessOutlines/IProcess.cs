@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Processes
+namespace Selenify.ProcessOutlines
 {
-    public interface IProcessBase
+    public interface IProcess
     {
         public string ProcessName { get; set; }
         public void Run();

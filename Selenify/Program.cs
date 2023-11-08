@@ -5,12 +5,12 @@ using System.Configuration;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
-using Selenify.Processes;
 using Selenify.Utility;
+using Selenify.ProcessOutlines;
 
 internal class Program {
     private static void Main( string[] args ) {
-        IProcessBase? selectedProcess = new UserProcessSelectionHandler()
+        IProcess? selectedProcess = new UserProcessSelectionHandler()
             .UserSelectProcess();
 
         if ( selectedProcess != null )

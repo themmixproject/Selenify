@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium.Internal;
-using Selenify.Processes;
+using Selenify.ProcessOutlines;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace Selenify.Utility
 {
     public class UserProcessSelectionHandler
     {
-        private List<IProcessBase> Processes;
+        private List<IProcess> Processes;
         private readonly int ProcessCount;
 
         public UserProcessSelectionHandler()
@@ -23,24 +23,24 @@ namespace Selenify.Utility
             ProcessCount = Processes.Count;
         }
 
-        private List<IProcessBase> GetProcesses()
+        private List<IProcess> GetProcesses()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes()
-                .Where( t => typeof( IProcessBase ).IsAssignableFrom( t ) && !t.IsAbstract )
+                .Where( t => typeof( IProcess ).IsAssignableFrom( t ) && !t.IsAbstract )
             .ToList();
 
-            var processes = new List<IProcessBase>();
+            var processes = new List<IProcess>();
             foreach (Type type in types)
             {
-                var process = Activator.CreateInstance( type ) as IProcessBase;
+                var process = Activator.CreateInstance( type ) as IProcess;
                 processes.Add( process! );
             }
 
             return processes;
         }
 
-        public IProcessBase? UserSelectProcess() {
+        public IProcess? UserSelectProcess() {
             bool userHasConfirmed = false;
             int? selectedIndex = 0;
             
@@ -123,7 +123,7 @@ namespace Selenify.Utility
             return false;
         }
 
-        private IProcessBase? GetSelectedProcess(int? selectedIndex)
+        private IProcess? GetSelectedProcess(int? selectedIndex)
         {
             if (selectedIndex == null)
             {

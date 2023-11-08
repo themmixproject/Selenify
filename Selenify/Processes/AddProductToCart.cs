@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Selenify.ProcessOutlines;
 
 namespace Selenify.Processes
 {
-    public class AddProductToCart : ProcessBase<AddProductToCart.ProcessState>
+    public class AddProductToCart : Process<AddProductToCart.ProcessState>
     {
         public class ProcessState { }
         public AddProductToCart() : base("Add Product To Cart") { }

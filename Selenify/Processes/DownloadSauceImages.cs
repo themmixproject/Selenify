@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Selenify.ProcessOutlines;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -9,7 +10,7 @@ using static Selenify.Utility.WebDriverManager;
 namespace Selenify.Processes
 {
 
-    public class DownloadSauceImages : ProcessBase<DownloadSauceImages.ProcessState>
+    public class DownloadSauceImages : Process<DownloadSauceImages.ProcessState>
 	{
 		public class ProcessState
 		{
