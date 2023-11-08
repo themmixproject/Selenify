@@ -14,7 +14,7 @@ namespace Selenify.Utility
 {
     public static class ProcessSelector
     {
-        public static List<IProcessBase> GetProcesses()
+        private static List<IProcessBase> GetProcesses()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes()
@@ -33,7 +33,7 @@ namespace Selenify.Utility
 
         private static List<IProcessBase> Processes { get; set; } = GetProcesses();
         private static readonly int ProcessCount = Processes.Count;
-        public static IProcessBase? SelectProcess() {
+        public static IProcessBase? UserSelectProcess() {
             bool userHasConfirmed = false;
             int? selectedIndex = 0;
             
