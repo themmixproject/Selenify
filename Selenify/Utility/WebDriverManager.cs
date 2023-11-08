@@ -47,7 +47,7 @@ namespace Selenify.Utility
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
             
-            AppSettingsSection secrets = ConfigurationManager.Secrets;
+            AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
             string profilePath = secrets.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
 
