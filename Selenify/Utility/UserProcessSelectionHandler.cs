@@ -12,7 +12,7 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Selenify.Utility
 {
-    public static class ProcessSelector
+    public static class UserProcessSelectionHandler
     {
         private static List<IProcessBase> GetProcesses()
         {
