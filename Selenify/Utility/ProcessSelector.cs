@@ -1,4 +1,4 @@
-using OpenQA.Selenium.Internal;
+﻿using OpenQA.Selenium.Internal;
 using Selenify.Processes;
 using System;
 using System.Collections.Generic;
@@ -54,6 +54,20 @@ namespace Selenify.Utility
             return null;
         }
 
+        private static void DisplayUI(int? selectedIndex)
+        {
+            int countStringLength = ProcessCount.ToString().Length;
+
+            string headerString = $"Select a process <{(selectedIndex!.Value + 1)
+                .ToString()
+                .PadLeft(countStringLength)}/{ProcessCount}> :\n";
+            string processName = Processes[selectedIndex!.Value].ProcessName;
+            string footer = "\n\nPress enter to continue.\n" +
+                "Use the arrow keys to select a proces.";
+            string uiString = headerString + processName + footer;
+            Console.UI.WriteLine(uiString);
+        }
+
         private static int? GetNewSelectedIndex(ConsoleKey key, int? oldIndex)
         {
             int? newIndex = 0;
@@ -102,17 +116,15 @@ namespace Selenify.Utility
             return false;
         }
 
-        private static void DisplayUI(int? selectedIndex) {
-            int countStringLength = ProcessCount.ToString().Length;
+        private static IProcessBase? GetSelectedProcess(int? selectedIndex)
+        {
+            if (selectedIndex == null)
+            {
+                return null;
+            }
 
-            string headerString = $"Select a process <{(selectedIndex!.Value + 1)
-                .ToString()
-                .PadLeft( countStringLength )}/{ProcessCount}> :\n";
-            string processName = Processes[selectedIndex!.Value].ProcessName;
-            string footer = "\n\nPress enter to continue.\n" +
-                "Use the arrow keys to select a proces.";
-            string uiString = headerString + processName + footer;
-            Console.UI.WriteLine( uiString );
+            return Processes[selectedIndex!.Value];
         }
+
     }
 }
