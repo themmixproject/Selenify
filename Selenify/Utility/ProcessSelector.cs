@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal;
 using Selenify.Processes;
 using System;
 using System.Collections.Generic;
@@ -34,25 +34,20 @@ namespace Selenify.Utility
         private static List<IProcessBase> Processes { get; set; } = GetProcesses();
         private static readonly int ProcessCount = Processes.Count;
         public static IProcessBase? SelectProcess() {
-            bool userHasNotConfirmed = true;
+            bool userHasConfirmed = false;
             int? selectedIndex = 0;
             
-            while( userHasNotConfirmed ) {
+            while( !userHasConfirmed ) {
                 DisplayUI(selectedIndex);
 
                 ConsoleKey key = System.Console.ReadKey().Key;
                 selectedIndex = GetNewSelectedIndex(key, selectedIndex);
-                userHasNotConfirmed = HandleUserConfirmation(key);
+                userHasConfirmed = IsUserSelectionConfirmed(key);
 
-                if ( !userHasNotConfirmed )
+                if (userHasConfirmed)
                 {
                     Console.UI.Reset();
-                    if (selectedIndex == null)
-                    {
-                        return null;
-                    }
-
-                    return Processes[selectedIndex!.Value];
+                    return GetSelectedProcess(selectedIndex);
                 }
             }
 
@@ -97,14 +92,14 @@ namespace Selenify.Utility
             }
         }
 
-        private static bool HandleUserConfirmation(ConsoleKey key)
+        private static bool IsUserSelectionConfirmed(ConsoleKey key)
         {
             if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
             {
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         private static void DisplayUI(int? selectedIndex) {
