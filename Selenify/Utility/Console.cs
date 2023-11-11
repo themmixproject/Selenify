@@ -26,98 +26,140 @@ namespace Selenify.Utility
 
         public static class UI
         {
-            private static int startLine = 0;
+            private static List<string> Lines = new List<string>();
             public static int endLine = 0;
-            private static List<string> lines = new List<string>();
+
+            private static int CalculateUIHeight()
+            {
+                int height = 0;
+
+                foreach(string line in Lines)
+                {
+                    height += (int)Math.Ceiling(
+                        (double)line.Length / System.Console.BufferWidth
+                    );
+                }
+
+                return height;
+            }
+
+            public static void Clear()
+            {
+                int UIHeight = CalculateUIHeight();
+
+                System.Console.SetCursorPosition(
+                    0,
+                    System.Console.CursorTop - UIHeight
+                );
+
+                for (int i = 0; i < UIHeight; i++)
+                {
+                    System.Console.WriteLine(
+                        new string(' ', System.Console.BufferWidth)
+                        );
+                }
+
+                System.Console.SetCursorPosition(
+                    0,
+                    System.Console.CursorTop - UIHeight
+                );
+
+                Lines.Clear();
+            }
 
             public static void WriteLines(params string[] texts)
             {
                 Clear();
-                lines = texts.SelectMany(text => text.Split('\n')).ToList();
-                foreach (var line in lines)
+
+                foreach (string text in texts)
                 {
-                    System.Console.WriteLine(line);
+                    var lineTexts = text.Split('\n');
+                    Lines.AddRange(lineTexts);
+
+                    Console.WriteLine(text);
                 }
-                endLine = System.Console.CursorTop;
             }
 
             public static void WriteLine(string text)
             {
                 Clear();
-                var newLines = text.Split('\n');
-                lines = new List<string>(newLines);
-                foreach (var line in newLines)
-                {
-                    System.Console.WriteLine(line);
-                }
-                endLine = System.Console.CursorTop;
+
+                string[] texts = text.Split("\n");
+                Lines.AddRange(texts);
+                Console.WriteLine(text);
             }
 
             public static void AppendLine(string text)
             {
-                var newLines = text.Split('\n');
-                lines.AddRange(newLines);
-                foreach (var line in newLines)
-                {
-                    System.Console.WriteLine(line);
-                }
-                endLine = System.Console.CursorTop;
+                string[] texts = text.Split("\n");
+                Lines.AddRange(texts);
+                Console.WriteLine(text);
             }
 
-            public static void UpdateLine(int index, string text)
+            public static void UpdateLine(int lineIndex, string text)
             {
-                while (index >= lines.Count)
+                bool emptyConsole = false;
+                if (Lines.Count == 0)
                 {
-                    lines.Add("");
+                    emptyConsole = true;
                 }
 
-                var newLines = text.Split('\n');
-                lines.RemoveAt(index);
-                lines.InsertRange(index, newLines);
-
-                System.Console.SetCursorPosition(0, startLine + index);
-
-                System.Console.Write(new string(' ', System.Console.BufferWidth));
-                System.Console.SetCursorPosition(0, startLine + index);
-                System.Console.Write(lines[index]);
-
-                endLine = startLine + lines.Count;
-
-                System.Console.SetCursorPosition(0, endLine);
-            }
-
-            public static void Clear()
-            {
-                if (startLine < endLine)
+                while (lineIndex >= Lines.Count)
                 {
-                    System.Console.SetCursorPosition(0, startLine);
+                    Lines.Add("");
+                }
 
-                    for (int i = startLine; i < endLine; i++)
+                string[] strings = text.Split("\n");
+                Lines.RemoveAt(lineIndex);
+                Lines.InsertRange(lineIndex, strings);
+
+                if (emptyConsole)
+                {
+                    foreach(string line in Lines)
                     {
-                        System.Console.Write(new string(' ', System.Console.BufferWidth));
-                        if (i < endLine - 1)
-                        {
-                            System.Console.WriteLine();
-                        }
+                        Console.WriteLine(line);
                     }
 
-                    System.Console.SetCursorPosition(0, startLine);
+                    return;
                 }
-                lines.Clear();
-                startLine = 0;
-                endLine = 0;
+
+                int bottomPosition = System.Console.CursorTop;
+
+                System.Console.SetCursorPosition(
+                    0, System.Console.CursorTop - (Lines.Count - lineIndex));
+
+                System.Console.WriteLine(new string(' ', System.Console.BufferWidth));
+                System.Console.SetCursorPosition(
+                    0, System.Console.CursorTop - 1);
+                System.Console.WriteLine(text);
+                System.Console.SetCursorPosition(0, bottomPosition);
+            }
+
+            public static int CalculateLineHeightUntilPosition(int lineIndex)
+            {
+                List<string> reversedLines = Lines;
+                reversedLines.Reverse();
+
+                int totalHeight = 0;
+                for (int i = 0; i < lineIndex; i ++)
+                {
+                    totalHeight += (int)Math.Ceiling(
+                        (double)reversedLines[i].Length / System.Console.BufferWidth
+                    );
+                }
+
+                return totalHeight;
             }
 
             public static void Stop()
             {
-                startLine = 0;
-                endLine = 0;
+                Lines.Clear();
             }
 
             public static void Reset()
             {
-                Clear();
                 Stop();
+                Clear();
             }
         }
     }
