@@ -76,7 +76,7 @@ namespace Selenify.Utility
                     var lineTexts = text.Split('\n');
                     Lines.AddRange(lineTexts);
 
-                    Console.WriteLine(text);
+                    System.Console.WriteLine(text);
                 }
             }
 
@@ -86,58 +86,56 @@ namespace Selenify.Utility
 
                 string[] texts = text.Split("\n");
                 Lines.AddRange(texts);
-                Console.WriteLine(text);
+                System.Console.WriteLine(text);
             }
 
             public static void AppendLine(string text)
             {
                 string[] texts = text.Split("\n");
                 Lines.AddRange(texts);
-                Console.WriteLine(text);
+                System.Console.WriteLine(text);
             }
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                bool emptyConsole = false;
-                if (Lines.Count == 0)
-                {
-                    emptyConsole = true;
-                }
-
+                bool uiIsEmpty = Lines.Count == 0 ? true : false;
                 while (lineIndex >= Lines.Count)
                 {
                     Lines.Add("");
                 }
 
+                if (uiIsEmpty)
+                {
+                    WriteLines(Lines.ToArray());
+                }
+
+                int height = CalculateLineHeightUntilPosition(lineIndex);
+
                 string[] strings = text.Split("\n");
                 Lines.RemoveAt(lineIndex);
                 Lines.InsertRange(lineIndex, strings);
 
-                if (emptyConsole)
-                {
-                    foreach(string line in Lines)
-                    {
-                        Console.WriteLine(line);
-                    }
+                System.Console.SetCursorPosition(
+                    0, System.Console.CursorTop - height);
 
-                    return;
+                for (int i = 0; i < height; i++)
+                {
+                    System.Console.WriteLine(
+                        new String(' ', System.Console.BufferWidth));
                 }
 
-                int bottomPosition = System.Console.CursorTop;
-
                 System.Console.SetCursorPosition(
-                    0, System.Console.CursorTop - (Lines.Count - lineIndex));
+                    0, System.Console.CursorTop - height);
 
-                System.Console.WriteLine(new string(' ', System.Console.BufferWidth));
-                System.Console.SetCursorPosition(
-                    0, System.Console.CursorTop - 1);
-                System.Console.WriteLine(text);
-                System.Console.SetCursorPosition(0, bottomPosition);
+                for (int i = lineIndex; i < Lines.Count; i++)
+                {
+                    System.Console.WriteLine(Lines[i]);
+                }
             }
 
-            public static int CalculateLineHeightUntilPosition(int lineIndex)
+            private static int CalculateLineHeightUntilPosition(int lineIndex)
             {
-                List<string> reversedLines = Lines;
+                List<string> reversedLines = new List<string>(Lines);
                 reversedLines.Reverse();
 
                 int totalHeight = 0;
