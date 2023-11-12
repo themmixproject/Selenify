@@ -29,41 +29,9 @@ namespace Selenify.Utility
             private static List<string> Lines = new List<string>();
             public static int endLine = 0;
 
-            private static int CalculateUIHeight()
-            {
-                int height = 0;
-
-                foreach(string line in Lines)
-                {
-                    height += (int)Math.Ceiling(
-                        (double)line.Length / System.Console.BufferWidth
-                    );
-                }
-
-                return height;
-            }
-
             public static void Clear()
             {
-                int UIHeight = CalculateUIHeight();
-
-                System.Console.SetCursorPosition(
-                    0,
-                    System.Console.CursorTop - UIHeight
-                );
-
-                for (int i = 0; i < UIHeight; i++)
-                {
-                    System.Console.WriteLine(
-                        new string(' ', System.Console.BufferWidth)
-                        );
-                }
-
-                System.Console.SetCursorPosition(
-                    0,
-                    System.Console.CursorTop - UIHeight
-                );
-
+                ClearOutputBelow(Lines.Count);
                 Lines.Clear();
             }
 
@@ -98,16 +66,34 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                EnsureLinesExist(lineIndex);
-                ClearOutputBelow(lineIndex);
+
+                int startIndex = GetStartIndex(lineIndex);
+                ExtendLinesIfIndexOutOfRange(lineIndex);
+
+                if (lineIndex <= Lines.Count)
+                {
+                    ClearOutputBelow(Lines.Count - lineIndex);
+                }
 
                 string[] strings = text.Split("\n");
                 Lines.RemoveAt(lineIndex);
                 Lines.InsertRange(lineIndex, strings);
 
-                for (int i = lineIndex; i < Lines.Count; i++)
+                for (int i = startIndex; i < Lines.Count; i++)
                 {
                     System.Console.WriteLine(Lines[i]);
+                }
+            }
+
+            private static int GetStartIndex(int lineIndex)
+            {
+                if (lineIndex < Lines.Count)
+                {
+                    return lineIndex;
+                }
+                else
+                {
+                    return Math.Abs(lineIndex - Lines.Count);
                 }
             }
 
@@ -128,17 +114,11 @@ namespace Selenify.Utility
                     0, System.Console.CursorTop - height);
             }
 
-            private static void EnsureLinesExist(int lineIndex)
+            private static void ExtendLinesIfIndexOutOfRange(int lineIndex)
             {
-                bool uiIsEmpty = Lines.Count == 0;
                 while (lineIndex >= Lines.Count)
                 {
                     Lines.Add("");
-                }
-
-                if (uiIsEmpty)
-                {
-                    WriteLines(Lines.ToArray());
                 }
             }
 
