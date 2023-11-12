@@ -98,7 +98,39 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                bool uiIsEmpty = Lines.Count == 0 ? true : false;
+                EnsureLinesExist(lineIndex);
+                ClearOutputBelow(lineIndex);
+
+                string[] strings = text.Split("\n");
+                Lines.RemoveAt(lineIndex);
+                Lines.InsertRange(lineIndex, strings);
+
+                for (int i = lineIndex; i < Lines.Count; i++)
+                {
+                    System.Console.WriteLine(Lines[i]);
+                }
+            }
+
+            private static void ClearOutputBelow(int lineIndex)
+            {
+                int height = CalculateLineHeightUntilPosition(lineIndex);
+                
+                System.Console.SetCursorPosition(
+                0, System.Console.CursorTop - height);
+
+                for (int i = 0; i < height; i++)
+                {
+                    System.Console.WriteLine(
+                        new string(' ', System.Console.BufferWidth));
+                }
+
+                System.Console.SetCursorPosition(
+                    0, System.Console.CursorTop - height);
+            }
+
+            private static void EnsureLinesExist(int lineIndex)
+            {
+                bool uiIsEmpty = Lines.Count == 0;
                 while (lineIndex >= Lines.Count)
                 {
                     Lines.Add("");
@@ -107,29 +139,6 @@ namespace Selenify.Utility
                 if (uiIsEmpty)
                 {
                     WriteLines(Lines.ToArray());
-                }
-
-                int height = CalculateLineHeightUntilPosition(lineIndex);
-
-                string[] strings = text.Split("\n");
-                Lines.RemoveAt(lineIndex);
-                Lines.InsertRange(lineIndex, strings);
-
-                System.Console.SetCursorPosition(
-                    0, System.Console.CursorTop - height);
-
-                for (int i = 0; i < height; i++)
-                {
-                    System.Console.WriteLine(
-                        new String(' ', System.Console.BufferWidth));
-                }
-
-                System.Console.SetCursorPosition(
-                    0, System.Console.CursorTop - height);
-
-                for (int i = lineIndex; i < Lines.Count; i++)
-                {
-                    System.Console.WriteLine(Lines[i]);
                 }
             }
 
