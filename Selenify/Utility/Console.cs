@@ -31,7 +31,7 @@ namespace Selenify.Utility
 
             public static void Clear()
             {
-                ClearOutputBelow(Lines.Count);
+                ClearOutputBelow(0);
                 Lines.Clear();
             }
 
@@ -66,14 +66,10 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-
                 int startIndex = GetStartIndex(lineIndex);
                 ExtendLinesIfIndexOutOfRange(lineIndex);
 
-                if (lineIndex <= Lines.Count)
-                {
-                    ClearOutputBelow(Lines.Count - lineIndex);
-                }
+                ClearOutputBelow(startIndex);
 
                 string[] strings = text.Split("\n");
                 Lines.RemoveAt(lineIndex);
@@ -124,14 +120,11 @@ namespace Selenify.Utility
 
             private static int CalculateLineHeightUntilPosition(int lineIndex)
             {
-                List<string> reversedLines = new List<string>(Lines);
-                reversedLines.Reverse();
-
                 int totalHeight = 0;
-                for (int i = 0; i < lineIndex; i ++)
+                for (int i = lineIndex; i < Lines.Count; i ++)
                 {
                     totalHeight += (int)Math.Ceiling(
-                        (double)reversedLines[i].Length / System.Console.BufferWidth
+                        (double)Lines[i].Length / System.Console.BufferWidth
                     );
                 }
 
