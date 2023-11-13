@@ -10,24 +10,19 @@ namespace Selenify.Utility
     {
         public static void WriteLine(string s)
         {
-            if (UI.endLine > 0){
-                UI.Reset();
-            }
+            UI.Clear();
             System.Console.WriteLine(s);
         }
 
         public static void Write (string s, params object[] args)
         {
-            if (UI.endLine > 0){
-                UI.Reset();
-            }
+            UI.Clear();
             System.Console.Write(s, args);
         }
 
         public static class UI
         {
             private static List<string> Lines = new List<string>();
-            public static int endLine = 0;
 
             public static void Clear()
             {
@@ -123,12 +118,6 @@ namespace Selenify.Utility
             public static void Stop()
             {
                 Lines.Clear();
-            }
-
-            public static void Reset()
-            {
-                Stop();
-                Clear();
             }
         }
     }

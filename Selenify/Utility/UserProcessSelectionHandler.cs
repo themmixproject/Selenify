@@ -53,7 +53,7 @@ namespace Selenify.Utility
 
                 if (userHasConfirmed)
                 {
-                    Console.UI.Reset();
+                    Console.UI.Clear();
                     return GetSelectedProcess(selectedIndex);
                 }
             }
