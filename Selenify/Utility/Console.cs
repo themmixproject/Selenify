@@ -66,7 +66,8 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                int startIndex = GetStartIndex(lineIndex);
+                int startIndex = lineIndex % Lines.Count;
+                
                 ExtendLinesIfIndexOutOfRange(lineIndex);
 
                 ClearOutputBelow(startIndex);
@@ -78,18 +79,6 @@ namespace Selenify.Utility
                 for (int i = startIndex; i < Lines.Count; i++)
                 {
                     System.Console.WriteLine(Lines[i]);
-                }
-            }
-
-            private static int GetStartIndex(int lineIndex)
-            {
-                if (lineIndex < Lines.Count)
-                {
-                    return lineIndex;
-                }
-                else
-                {
-                    return Math.Abs(lineIndex - Lines.Count);
                 }
             }
 
