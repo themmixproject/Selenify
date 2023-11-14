@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium.DevTools.V116.DOM;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,7 +62,7 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                int startIndex = lineIndex % Lines.Count;
+                int startIndex = GetStartIndex(lineIndex);
                 
                 ExtendLinesIfIndexOutOfRange(lineIndex);
 
@@ -70,6 +71,43 @@ namespace Selenify.Utility
                 string[] strings = text.Split("\n");
                 Lines.RemoveAt(lineIndex);
                 Lines.InsertRange(lineIndex, strings);
+
+                for (int i = startIndex; i < Lines.Count; i++)
+                {
+                    System.Console.WriteLine(Lines[i]);
+                }
+            }
+
+            private static int GetStartIndex(int lineIndex)
+            {
+                if (lineIndex < Lines.Count)
+                {
+                    return lineIndex;
+                }
+
+                return Lines.Count;
+            }
+
+            public static void UpdateLineFrom(int lineIndex, params string[] texts)
+            {
+                int startIndex = GetStartIndex(lineIndex);
+
+                ExtendLinesIfIndexOutOfRange(lineIndex);
+
+                ClearOutputBelow(startIndex);
+
+                for (int i = startIndex; i < Lines.Count; i++)
+                {
+                    Lines[i] = "";
+                }
+                
+                Lines.RemoveRange(lineIndex, Lines.Count - lineIndex);
+
+                foreach (string text in texts)
+                {
+                    var lineTexts = text.Split('\n');
+                    Lines.AddRange(lineTexts);
+                }
 
                 for (int i = startIndex; i < Lines.Count; i++)
                 {
@@ -101,6 +139,8 @@ namespace Selenify.Utility
                     Lines.Add("");
                 }
             }
+
+
 
             private static int CalculateLineHeightUntilPosition(int lineIndex)
             {
