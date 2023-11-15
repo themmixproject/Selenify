@@ -32,7 +32,7 @@ namespace Selenify.Configurations
                 .OpenMappedExeConfiguration(
                     new ExeConfigurationFileMap
                     {
-                        ExeConfigFilename = @".\Config\Secrets.config"
+                        ExeConfigFilename = @".\Configurations\Secrets.config"
                     },
                     ConfigurationUserLevel.None
                 );
