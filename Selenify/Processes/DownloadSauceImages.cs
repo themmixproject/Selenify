@@ -1,10 +1,16 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Selenify.Extensions;
 using Selenify.ProcessOutlines;
+using Selenify.Utility;
 using SeleniumExtras.WaitHelpers;
+using System;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Net;
+using System.Security.Policy;
+using System.Threading;
 using static Selenify.Utility.WebDriverManager;
 
 namespace Selenify.Processes
@@ -106,8 +112,7 @@ namespace Selenify.Processes
 			CreateDownloadsFolder();
 
 			string savePath = GetProjectDirectoryPath() + "\\Downloads";
-			DownloadFileToDirectory( imageSource, savePath, imageName );
-		}
+			DownloadFileToDirectory( imageSource, savePath, imageName );		}
 
 		private void CreateDownloadsFolder()
 		{
@@ -126,24 +131,32 @@ namespace Selenify.Processes
 			)!.Parent!.Parent!.FullName;
 		}
 
-		private async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
+		public async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
 		{
-			using (HttpClient client = new HttpClient())
-			{
-				HttpResponseMessage response = await client.GetAsync( fileUrl );
+			var progress = new ConsoleProgressBar();
+            using (var client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMinutes(5);
 
-				using (Stream memoryStream = await response.Content.ReadAsStreamAsync())
-				{
-					string savePath = Path.Combine( path, fileName );
-					using (FileStream fileStream = File.Create( savePath ))
-					{
-						memoryStream.CopyTo( fileStream );
-					}
-				}
-			}
-		}
+                // Create a file stream to store the downloaded data.
+                // This really can be any type of writeable stream.
+                using (var file = new FileStream(path + fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
 
-		private ReadOnlyCollection<IWebElement> GetInventoryItems()
+                    // Use the custom extension method below to download the data.
+                    // The passed progress-instance will receive the download status updates.
+                    await client.DownloadAsync(fileUrl, file, progress);
+                }
+            }
+        }
+
+		private void DownloaProgressCallback(object sender, DownloadProgressChangedEventArgs e)
+		{
+            System.Console.Write($"\rDownloaded {e.BytesReceived} of {e.TotalBytesToReceive} bytes ({e.ProgressPercentage}%)");
+        }
+
+
+        private ReadOnlyCollection<IWebElement> GetInventoryItems()
 		{
 			return Driver
 				.FindElement( By.Id( "inventory_container" ) )
