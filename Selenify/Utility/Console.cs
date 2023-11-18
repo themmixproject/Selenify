@@ -64,9 +64,10 @@ namespace Selenify.Utility
             {
                 int startIndex = Math.Min(lineIndex, Lines.Count);
 
+                ClearOutputBelow(startIndex);
+                
                 ExtendLinesIfIndexOutOfRange(lineIndex);
 
-                ClearOutputBelow(startIndex);
 
                 string[] strings = text.Split("\n");
                 Lines.RemoveAt(lineIndex);
@@ -82,9 +83,10 @@ namespace Selenify.Utility
             {
                 int startIndex = Math.Min(lineIndex, Lines.Count);
 
+                ClearOutputBelow(startIndex);
+                
                 ExtendLinesIfIndexOutOfRange(lineIndex);
 
-                ClearOutputBelow(startIndex);
 
                 for (int i = startIndex; i < Lines.Count; i++)
                 {
@@ -137,9 +139,7 @@ namespace Selenify.Utility
                 int totalHeight = 0;
                 for (int i = lineIndex; i < Lines.Count; i ++)
                 {
-                    totalHeight += (int)Math.Ceiling(
-                        (double)Lines[i].Length / System.Console.BufferWidth
-                    );
+                    totalHeight += Math.Max(1, (int)Math.Ceiling((double)Lines[i].Length / System.Console.BufferWidth));
                 }
 
                 return totalHeight;
