@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium.DevTools.V116.DOM;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Selenify.Utility
         public static class UI
         {
             private static List<string> Lines = new List<string>();
+            private static object _lock = new object();
 
             public static void Clear()
             {
@@ -33,77 +35,93 @@ namespace Selenify.Utility
 
             public static void WriteLines(params string[] texts)
             {
-                Clear();
-
-                foreach (string text in texts)
+                lock( _lock)
                 {
-                    var lineTexts = text.Split('\n');
-                    Lines.AddRange(lineTexts);
+                    Clear();
 
-                    System.Console.WriteLine(text);
+                    foreach (string text in texts)
+                    {
+                        var lineTexts = text.Split('\n');
+                        Lines.AddRange(lineTexts);
+
+                        System.Console.WriteLine(text);
+                    }
                 }
             }
 
             public static void WriteLine(string text)
             {
-                Clear();
+                lock (_lock)
+                {
+                    Thread.Sleep(200);
+                    Clear();
 
-                string[] texts = text.Split("\n");
-                Lines.AddRange(texts);
-                System.Console.WriteLine(text);
+                    string[] texts = text.Split("\n");
+                    Lines.AddRange(texts);
+                    System.Console.WriteLine(text);
+                }
             }
 
             public static void AppendLine(string text)
             {
-                string[] texts = text.Split("\n");
-                Lines.AddRange(texts);
-                System.Console.WriteLine(text);
+                lock(_lock)
+                {
+                    string[] texts = text.Split("\n");
+                    Lines.AddRange(texts);
+                    System.Console.WriteLine(text);
+                }
             }
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                int startIndex = Math.Min(lineIndex, Lines.Count);
-
-                ClearOutputBelow(startIndex);
-                
-                ExtendLinesIfIndexOutOfRange(lineIndex);
-
-
-                string[] strings = text.Split("\n");
-                Lines.RemoveAt(lineIndex);
-                Lines.InsertRange(lineIndex, strings);
-
-                for (int i = startIndex; i < Lines.Count; i++)
+                lock(_lock)
                 {
-                    System.Console.WriteLine(Lines[i]);
+                    int startIndex = Math.Min(lineIndex, Lines.Count);
+
+                    ClearOutputBelow(startIndex);
+
+                    ExtendLinesIfIndexOutOfRange(lineIndex);
+
+
+                    string[] strings = text.Split("\n");
+                    Lines.RemoveAt(lineIndex);
+                    Lines.InsertRange(lineIndex, strings);
+
+                    for (int i = startIndex; i < Lines.Count; i++)
+                    {
+                        System.Console.WriteLine(Lines[i]);
+                    }
                 }
             }
 
             public static void UpdateLineFrom(int lineIndex, params string[] texts)
             {
-                int startIndex = Math.Min(lineIndex, Lines.Count);
-
-                ClearOutputBelow(startIndex);
-                
-                ExtendLinesIfIndexOutOfRange(lineIndex);
-
-
-                for (int i = startIndex; i < Lines.Count; i++)
+                lock (_lock)
                 {
-                    Lines[i] = "";
-                }
-                
-                Lines.RemoveRange(lineIndex, Lines.Count - lineIndex);
+                    int startIndex = Math.Min(lineIndex, Lines.Count);
 
-                foreach (string text in texts)
-                {
-                    var lineTexts = text.Split('\n');
-                    Lines.AddRange(lineTexts);
-                }
+                    ClearOutputBelow(startIndex);
 
-                for (int i = startIndex; i < Lines.Count; i++)
-                {
-                    System.Console.WriteLine(Lines[i]);
+                    ExtendLinesIfIndexOutOfRange(lineIndex);
+
+
+                    for (int i = startIndex; i < Lines.Count; i++)
+                    {
+                        Lines[i] = "";
+                    }
+
+                    Lines.RemoveRange(lineIndex, Lines.Count - lineIndex);
+
+                    foreach (string text in texts)
+                    {
+                        var lineTexts = text.Split('\n');
+                        Lines.AddRange(lineTexts);
+                    }
+
+                    for (int i = startIndex; i < Lines.Count; i++)
+                    {
+                        System.Console.WriteLine(Lines[i]);
+                    }
                 }
             }
 
@@ -131,8 +149,6 @@ namespace Selenify.Utility
                     Lines.Add("");
                 }
             }
-
-
 
             private static int CalculateLineHeightUntilPosition(int lineIndex)
             {
