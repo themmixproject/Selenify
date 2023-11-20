@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium.Internal;
-using Selenify.ProcessOutlines;
+using Selenify.Models.Process;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
-namespace Selenify.Utility
+namespace Selenify.Common.Utility
 {
     public class UserProcessSelectionHandler
     {
@@ -27,24 +27,26 @@ namespace Selenify.Utility
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes()
-                .Where( t => typeof( IProcess ).IsAssignableFrom( t ) && !t.IsAbstract )
+                .Where(t => typeof(IProcess).IsAssignableFrom(t) && !t.IsAbstract)
             .ToList();
 
             var processes = new List<IProcess>();
             foreach (Type type in types)
             {
-                var process = Activator.CreateInstance( type ) as IProcess;
-                processes.Add( process! );
+                var process = Activator.CreateInstance(type) as IProcess;
+                processes.Add(process!);
             }
 
             return processes;
         }
 
-        public IProcess? UserSelectProcess() {
+        public IProcess? UserSelectProcess()
+        {
             bool userHasConfirmed = false;
             int? selectedIndex = 0;
-            
-            while( !userHasConfirmed ) {
+
+            while (!userHasConfirmed)
+            {
                 DisplayUI(selectedIndex);
 
                 ConsoleKey key = System.Console.ReadKey().Key;
@@ -87,7 +89,7 @@ namespace Selenify.Utility
             {
                 newIndex = GetNextOptionIndex(oldIndex);
             }
-            else if ( key == ConsoleKey.Escape)
+            else if (key == ConsoleKey.Escape)
             {
                 newIndex = null;
             }

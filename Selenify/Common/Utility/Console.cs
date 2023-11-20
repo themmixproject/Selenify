@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.DevTools.V116.DOM;
+﻿using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Utility
+namespace Selenify.Common.Utility
 {
     static class Console
     {
@@ -16,7 +16,7 @@ namespace Selenify.Utility
             System.Console.WriteLine(s);
         }
 
-        public static void Write (string s, params object[] args)
+        public static void Write(string s, params object[] args)
         {
             UI.Clear();
             System.Console.Write(s, args);
@@ -35,7 +35,7 @@ namespace Selenify.Utility
 
             public static void WriteLines(params string[] texts)
             {
-                lock( _lock)
+                lock (_lock)
                 {
                     Clear();
 
@@ -64,7 +64,7 @@ namespace Selenify.Utility
 
             public static void AppendLine(string text)
             {
-                lock(_lock)
+                lock (_lock)
                 {
                     string[] texts = text.Split("\n");
                     Lines.AddRange(texts);
@@ -74,7 +74,7 @@ namespace Selenify.Utility
 
             public static void UpdateLine(int lineIndex, string text)
             {
-                lock(_lock)
+                lock (_lock)
                 {
                     int startIndex = Math.Min(lineIndex, Lines.Count);
 
@@ -128,7 +128,7 @@ namespace Selenify.Utility
             private static void ClearOutputBelow(int lineIndex)
             {
                 int height = CalculateLineHeightUntilPosition(lineIndex);
-                
+
                 System.Console.SetCursorPosition(
                 0, System.Console.CursorTop - height);
 
@@ -153,7 +153,7 @@ namespace Selenify.Utility
             private static int CalculateLineHeightUntilPosition(int lineIndex)
             {
                 int totalHeight = 0;
-                for (int i = lineIndex; i < Lines.Count; i ++)
+                for (int i = lineIndex; i < Lines.Count; i++)
                 {
                     totalHeight += Math.Max(1, (int)Math.Ceiling((double)Lines[i].Length / System.Console.BufferWidth));
                 }

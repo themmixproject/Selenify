@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Selenify.ProcessOutlines;
+using Selenify.Models.Process;
 
 namespace Selenify.Processes
 {
@@ -11,6 +11,6 @@ namespace Selenify.Processes
     {
         public class ProcessState { }
         public AddProductToCart() : base("Add Product To Cart") { }
-        public override void Run () { }
+        public override void Run() { }
     }
 }

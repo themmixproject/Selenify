@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using Selenify.Extensions;
-using Selenify.ProcessOutlines;
-using Selenify.Utility;
+using Selenify.Common.Extensions;
+using Selenify.Common.Utility;
+using Selenify.Models.Process;
 using SeleniumExtras.WaitHelpers;
 using System;
 using System.Collections.ObjectModel;
@@ -11,129 +11,130 @@ using System.Configuration;
 using System.Net;
 using System.Security.Policy;
 using System.Threading;
-using static Selenify.Utility.WebDriverManager;
+using static Selenify.Common.Utility.WebDriverManager;
 
 namespace Selenify.Processes
 {
 
     public class DownloadSauceImages : Process<DownloadSauceImages.ProcessState>
-	{
-		public class ProcessState
-		{
-			public bool isLoggedIn { get; set; }
-			public int i { get; set; } = 0;
-		};
+    {
+        public class ProcessState
+        {
+            public bool isLoggedIn { get; set; }
+            public int i { get; set; } = 0;
+        };
 
-		public DownloadSauceImages() : base( "Download Sauce Images" ) { }
+        public DownloadSauceImages() : base("Download Sauce Images") { }
 
-		public override void Run()
-		{
-			Uri url = new Uri( "https://www.saucedemo.com/" );
-			Driver.Navigate().GoToUrl( url );
+        public override void Run()
+        {
+            Uri url = new Uri("https://www.saucedemo.com/");
+            Driver.Navigate().GoToUrl(url);
 
-			LoginUser();
+            LoginUser();
 
-			State.isLoggedIn = true;
-			SaveState();
+            State.isLoggedIn = true;
+            SaveState();
 
-			LoopThroughProducts();
+            LoopThroughProducts();
 
-			Driver.Quit();
+            Driver.Quit();
 
-			ResetState();
-		}
+            ResetState();
+        }
 
-		private void LoginUser()
-		{
-			AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
-			string siteUsername = secrets.Settings["site_username"].Value;
-			string sitePassword = secrets.Settings["site_password"].Value;
+        private void LoginUser()
+        {
+            AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
+            string siteUsername = secrets.Settings["site_username"].Value;
+            string sitePassword = secrets.Settings["site_password"].Value;
 
-			Configurations.ConfigurationManager.UnloadSecretsConfig();
+            Configurations.ConfigurationManager.UnloadSecretsConfig();
 
-			WebDriverWait loginWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
-			loginWait.Until( ExpectedConditions.ElementIsVisible( By.Id( "user-name" ) ) );
+            WebDriverWait loginWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            loginWait.Until(ExpectedConditions.ElementIsVisible(By.Id("user-name")));
 
-			IWebElement usernameField = Driver.FindElement( By.Id( "user-name" ) );
-			usernameField.SendKeys( siteUsername );
+            IWebElement usernameField = Driver.FindElement(By.Id("user-name"));
+            usernameField.SendKeys(siteUsername);
 
-			IWebElement passwordField = Driver.FindElement( By.Id( "password" ) );
-			passwordField.SendKeys( sitePassword );
+            IWebElement passwordField = Driver.FindElement(By.Id("password"));
+            passwordField.SendKeys(sitePassword);
 
-			IWebElement loginButton = Driver.FindElement( By.Id( "login-button" ) );
-			loginButton.Click();
+            IWebElement loginButton = Driver.FindElement(By.Id("login-button"));
+            loginButton.Click();
 
-			WebDriverWait inventoryHeaderWait = new WebDriverWait( Driver, TimeSpan.FromSeconds( 5 ) );
-			inventoryHeaderWait.Until(
-				ExpectedConditions.ElementExists(
-					By.XPath( "//*[@id='header_container']/div[1]/div[2]/div" )
-				)
-			);
-		}
+            WebDriverWait inventoryHeaderWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            inventoryHeaderWait.Until(
+                ExpectedConditions.ElementExists(
+                    By.XPath("//*[@id='header_container']/div[1]/div[2]/div")
+                )
+            );
+        }
 
-		private void LoopThroughProducts()
-		{
-			ReadOnlyCollection<IWebElement> inventoryItems = GetInventoryItems();
+        private void LoopThroughProducts()
+        {
+            ReadOnlyCollection<IWebElement> inventoryItems = GetInventoryItems();
 
-			for (; State.i < inventoryItems.Count; State.i++)
-			{
-				IWebElement inventoryItem = inventoryItems[State.i];
+            for (; State.i < inventoryItems.Count; State.i++)
+            {
+                IWebElement inventoryItem = inventoryItems[State.i];
 
-				if (ElementIsStale( inventoryItem ))
-				{
-					inventoryItems = GetInventoryItems();
-					inventoryItem = inventoryItems[State.i];
-				}
+                if (ElementIsStale(inventoryItem))
+                {
+                    inventoryItems = GetInventoryItems();
+                    inventoryItem = inventoryItems[State.i];
+                }
 
-				IWebElement inventoryItemLink = inventoryItem
-					.FindElement( By.ClassName( "inventory_item_label" ) )
-					.FindElement( By.TagName( "a" ) );
-				inventoryItemLink.Click();
+                IWebElement inventoryItemLink = inventoryItem
+                    .FindElement(By.ClassName("inventory_item_label"))
+                    .FindElement(By.TagName("a"));
+                inventoryItemLink.Click();
 
-				SaveInventoryItemImage();
+                SaveInventoryItemImage();
 
-				Driver.Navigate().Back();
+                Driver.Navigate().Back();
 
-				Thread.Sleep( 500 );
+                Thread.Sleep(500);
 
-				SaveState();
-			}
-		}
+                SaveState();
+            }
+        }
 
-		private void SaveInventoryItemImage()
-		{
-			IWebElement inventoryImage = Driver
-				.FindElement( By.Id( "inventory_item_container" ) )
-				.FindElement( By.ClassName( "inventory_details_img" ) );
+        private void SaveInventoryItemImage()
+        {
+            IWebElement inventoryImage = Driver
+                .FindElement(By.Id("inventory_item_container"))
+                .FindElement(By.ClassName("inventory_details_img"));
 
-			string imageSource = inventoryImage.GetAttribute( "src" );
-			string imageName = Path.GetFileName( imageSource );
+            string imageSource = inventoryImage.GetAttribute("src");
+            string imageName = Path.GetFileName(imageSource);
 
-			CreateDownloadsFolder();
+            CreateDownloadsFolder();
 
-			string savePath = GetProjectDirectoryPath() + "\\Downloads";
-			DownloadFileToDirectory( imageSource, savePath, imageName );		}
+            string savePath = GetProjectDirectoryPath() + "\\Downloads";
+            DownloadFileToDirectory(imageSource, savePath, imageName);
+        }
 
-		private void CreateDownloadsFolder()
-		{
-			string path = GetProjectDirectoryPath() + "\\Downloads";
+        private void CreateDownloadsFolder()
+        {
+            string path = GetProjectDirectoryPath() + "\\Downloads";
 
-			if (!Directory.Exists( path ))
-			{
-				Directory.CreateDirectory( path );
-			}
-		}
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
 
-		private string GetProjectDirectoryPath()
-		{
-			return Directory.GetParent(
-				Directory.GetCurrentDirectory()!
-			)!.Parent!.Parent!.FullName;
-		}
+        private string GetProjectDirectoryPath()
+        {
+            return Directory.GetParent(
+                Directory.GetCurrentDirectory()!
+            )!.Parent!.Parent!.FullName;
+        }
 
-		public async void DownloadFileToDirectory( string fileUrl, string path, string fileName )
-		{
-			var progress = new ConsoleProgressBar();
+        public async void DownloadFileToDirectory(string fileUrl, string path, string fileName)
+        {
+            var progress = new ConsoleProgressBar();
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(5);
@@ -150,30 +151,30 @@ namespace Selenify.Processes
             }
         }
 
-		private void DownloaProgressCallback(object sender, DownloadProgressChangedEventArgs e)
-		{
+        private void DownloaProgressCallback(object sender, DownloadProgressChangedEventArgs e)
+        {
             System.Console.Write($"\rDownloaded {e.BytesReceived} of {e.TotalBytesToReceive} bytes ({e.ProgressPercentage}%)");
         }
 
 
         private ReadOnlyCollection<IWebElement> GetInventoryItems()
-		{
-			return Driver
-				.FindElement( By.Id( "inventory_container" ) )
-				.FindElements( By.CssSelector( ".inventory_item" ) );
-		}
+        {
+            return Driver
+                .FindElement(By.Id("inventory_container"))
+                .FindElements(By.CssSelector(".inventory_item"));
+        }
 
-		private bool ElementIsStale( IWebElement element )
-		{
-			try
-			{
-				bool _ = element.Displayed;
-				return false;
-			}
-			catch (StaleElementReferenceException)
-			{
-				return true;
-			}
-		}
-	}
+        private bool ElementIsStale(IWebElement element)
+        {
+            try
+            {
+                bool _ = element.Displayed;
+                return false;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return true;
+            }
+        }
+    }
 }

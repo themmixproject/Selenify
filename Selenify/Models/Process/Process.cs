@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Selenify.ProcessOutlines
+namespace Selenify.Models.Process
 {
     public abstract class Process<T> : IProcess
     {

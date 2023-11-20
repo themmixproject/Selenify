@@ -3,9 +3,10 @@ using OpenQA.Selenium.Edge;
 using Selenify.Configurations;
 using System.Configuration;
 
-namespace Selenify.Utility
+namespace Selenify.Common.Utility
 {
-    public static class WebDriverManager {
+    public static class WebDriverManager
+    {
         private static IWebDriver? _driver;
         public static IWebDriver Driver
         {
@@ -20,8 +21,10 @@ namespace Selenify.Utility
             }
         }
 
-        public static void LoadEdgeDriver( EdgeOptions? options = null ) {
-            if (options == null) {
+        public static void LoadEdgeDriver(EdgeOptions? options = null)
+        {
+            if (options == null)
+            {
                 options = GetDefaultEdgeOptions();
             }
 
@@ -29,12 +32,13 @@ namespace Selenify.Utility
                 .Configuration
                 .ConfigurationManager
                 .AppSettings["edgeDriverPath"]!;
-            _driver = new EdgeDriver( driverPath, options );
+            _driver = new EdgeDriver(driverPath, options);
         }
 
         private static EdgeOptions GetDefaultEdgeOptions()
         {
-            EdgeOptions options = new EdgeOptions {
+            EdgeOptions options = new EdgeOptions
+            {
                 BinaryLocation = System
                 .Configuration
                 .ConfigurationManager
@@ -46,7 +50,7 @@ namespace Selenify.Utility
             options.AddArgument("--disable-features=msUndersideButton");
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
-            
+
             AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
             string profilePath = secrets.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
@@ -56,7 +60,7 @@ namespace Selenify.Utility
 
         public static void QuitDriver()
         {
-            if(_driver != null)
+            if (_driver != null)
             {
                 _driver.Quit();
                 _driver.Dispose();

@@ -5,8 +5,8 @@ using System.Configuration;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
-using Selenify.Utility;
-using Selenify.ProcessOutlines;
+using Selenify.Common.Utility;
+using Selenify.Models.Process;
 
 internal class Program {
     private static void Main( string[] args ) {
