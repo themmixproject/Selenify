@@ -111,7 +111,7 @@ namespace Selenify.Processes
 
             CreateDownloadsFolder();
 
-            string savePath = GetProjectDirectoryPath() + "\\Downloads";
+            string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
             DownloadFileToDirectory(imageSource, savePath, imageName);
         }
 

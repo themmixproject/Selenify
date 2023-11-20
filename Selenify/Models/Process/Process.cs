@@ -12,9 +12,7 @@ namespace Selenify.Models.Process
         public string ProcessName { get; set; } = string.Empty;
         public T State { get; set; } = default!;
 
-        private string RunningProcessesDir = Directory.GetParent(
-                Directory.GetCurrentDirectory()!
-            )!.Parent!.Parent!.FullName + "\\RunningProcesses\\";
+        private string RunningProcessesDir = Directory.GetCurrentDirectory()! + "\\RunningProcesses\\";
 
         public abstract void Run();
 
