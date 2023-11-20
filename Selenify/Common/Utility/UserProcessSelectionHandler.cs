@@ -79,7 +79,7 @@ namespace Selenify.Common.Utility
 
         private int? GetNewSelectedIndex(ConsoleKey key, int? oldIndex)
         {
-            int? newIndex = 0;
+            int? newIndex = oldIndex;
 
             if (key == ConsoleKey.LeftArrow)
             {
