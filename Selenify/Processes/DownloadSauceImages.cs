@@ -109,20 +109,11 @@ namespace Selenify.Processes
             string imageSource = inventoryImage.GetAttribute("src");
             string imageName = Path.GetFileName(imageSource);
 
-            CreateDownloadsFolder();
+            string downloadsDirPath = GetProjectDirectoryPath() + "\\Downloads\\";
+            FileManager.CreateDirectoryIfNotExists( downloadsDirPath );
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
             DownloadFileToDirectory(imageSource, savePath, imageName);
-        }
-
-        private void CreateDownloadsFolder()
-        {
-            string path = GetProjectDirectoryPath() + "\\Downloads";
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
         }
 
         private string GetProjectDirectoryPath()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Selenify.Common.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,8 @@ namespace Selenify.Models.Process
         {
             ProcessName = processName;
 
-            CreateRunningProcessesDirectory();
+            FileManager.CreateDirectoryIfNotExists(RunningProcessesDir);
+
             CreateStateFile();
             LoadState();
         }
@@ -52,31 +54,15 @@ namespace Selenify.Models.Process
         {
             string stateFileName = ProcessName.Replace(" ", "") + ".state.json";
             string stateFilePath = RunningProcessesDir + stateFileName;
-            if (
-                File.Exists(stateFilePath) && new FileInfo(stateFilePath).Length > 0)
-            {
-                return;
-            }
 
-            if (!File.Exists(stateFilePath))
-            {
-                using (File.Create(stateFilePath)) { }
-            }
+            FileManager.CreateFileIfNotExists(stateFilePath);
+
             if (new FileInfo(stateFilePath).Length == 0)
             {
                 State = Activator.CreateInstance<T>();
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(State);
                 File.WriteAllText(stateFilePath, json);
             }
-        }
-
-        private void CreateRunningProcessesDirectory()
-        {
-            if (Directory.Exists(RunningProcessesDir))
-            {
-                return;
-            }
-            Directory.CreateDirectory(RunningProcessesDir);
         }
     }
 }
