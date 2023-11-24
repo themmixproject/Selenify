@@ -17,7 +17,6 @@ namespace Selenify.Common.Extensions
 
                 using (var download = await response.Content.ReadAsStreamAsync(cancellationToken))
                 {
-
                     // Ignore progress reporting when no progress reporter was 
                     // passed or when the content length is unknown
                     if (progress == null || !contentLength.HasValue)
@@ -30,9 +29,10 @@ namespace Selenify.Common.Extensions
                     var relativeProgress = new Progress<long>(totalBytes => progress.Report((float)totalBytes / contentLength.Value));
                     // Use extension method to report progress while downloading
                     await download.CopyToAsync(destination, 81920, relativeProgress, cancellationToken);
-                    progress.Report(1);
                 }
+                progress.Report(1);  // Ensure progress is reported as 100% after download is completed
             }
         }
+
     }
 }
