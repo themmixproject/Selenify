@@ -27,6 +27,8 @@ namespace Selenify.Common.Utility
             private static List<string> Lines = new List<string>();
             private static object _lock = new object();
 
+            public static int LineCount { get { return Lines.Count; } }
+
             public static void Clear()
             {
                 ClearOutputBelow(0);

@@ -10,6 +10,7 @@ namespace Selenify.Common.Utility
     {
         private int barSize = System.Console.BufferWidth;
         private readonly char progressCharacter = '=';
+        private int lineToUpdate = Console.UI.LineCount;
 
         public void Report(float value)
         {
@@ -19,7 +20,7 @@ namespace Selenify.Common.Utility
             string text = "[" + new string('#', progressBlockCount) +
                 new string('-', blockCount - progressBlockCount) + "] " + percentage;
 
-            Console.UI.UpdateLine(1, text);
+            Console.UI.UpdateLine(lineToUpdate, text);
 
         }
     }
