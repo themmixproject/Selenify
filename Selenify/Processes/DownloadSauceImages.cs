@@ -90,7 +90,7 @@ namespace Selenify.Processes
                     .FindElement(By.TagName("a"));
                 inventoryItemLink.Click();
 
-                SaveInventoryItemImage();
+                SaveInventoryItemImageAsync();
 
                 Driver.Navigate().Back();
 
@@ -100,7 +100,7 @@ namespace Selenify.Processes
             }
         }
 
-        private void SaveInventoryItemImage()
+        private async void SaveInventoryItemImageAsync()
         {
             IWebElement inventoryImage = Driver
                 .FindElement(By.Id("inventory_item_container"))
@@ -113,7 +113,7 @@ namespace Selenify.Processes
             FileManager.CreateDirectoryIfNotExists( downloadsDirPath );
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
-            DownloadFileToDirectory(imageSource, savePath, imageName);
+            await DownloadManager.DownloadFileWithProgressBarAsync(imageSource, savePath + imageName);
         }
 
         private string GetProjectDirectoryPath()
@@ -121,25 +121,6 @@ namespace Selenify.Processes
             return Directory.GetParent(
                 Directory.GetCurrentDirectory()!
             )!.Parent!.Parent!.FullName;
-        }
-
-        public async void DownloadFileToDirectory(string fileUrl, string path, string fileName)
-        {
-            var progress = new ConsoleProgressBar();
-            using (var client = new HttpClient())
-            {
-                client.Timeout = TimeSpan.FromMinutes(5);
-
-                // Create a file stream to store the downloaded data.
-                // This really can be any type of writeable stream.
-                using (var file = new FileStream(path + fileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-
-                    // Use the custom extension method below to download the data.
-                    // The passed progress-instance will receive the download status updates.
-                    await client.DownloadAsync(fileUrl, file, progress);
-                }
-            }
         }
 
         private void DownloaProgressCallback(object sender, DownloadProgressChangedEventArgs e)
