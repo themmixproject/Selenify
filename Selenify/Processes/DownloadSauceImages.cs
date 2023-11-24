@@ -12,6 +12,7 @@ using System.Net;
 using System.Security.Policy;
 using System.Threading;
 using static Selenify.Common.Utility.WebDriverManager;
+using static Selenify.Common.Extensions.SeleniumExtensions;
 
 namespace Selenify.Processes
 {
@@ -134,19 +135,6 @@ namespace Selenify.Processes
             return Driver
                 .FindElement(By.Id("inventory_container"))
                 .FindElements(By.CssSelector(".inventory_item"));
-        }
-
-        private bool ElementIsStale(IWebElement element)
-        {
-            try
-            {
-                bool _ = element.Displayed;
-                return false;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return true;
-            }
         }
     }
 }
