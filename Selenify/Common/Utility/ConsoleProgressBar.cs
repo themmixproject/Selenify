@@ -14,14 +14,16 @@ namespace Selenify.Common.Utility
 
         public void Report(float value)
         {
-            string percentage = Math.Round(value * 100, 2).ToString().PadLeft(4) + "%";
+            string percentage = Math.Round(value * 100, 2).ToString().PadLeft(5) + "%";
             int blockCount = 20;
             int progressBlockCount = (int)(blockCount * value);
             string text = "[" + new string('#', progressBlockCount) +
-                new string('-', blockCount - progressBlockCount) + "] " + percentage;
+                new string('-', blockCount - progressBlockCount) + "]" + percentage;
 
-            Console.UI.UpdateLine(lineToUpdate, text);
+            System.Console.Write("\r" + text);
 
-        }
+            if (value == 1)
+                System.Console.Write("\r" + new string(' ', System.Console.BufferWidth) + "\r");
+            }
     }
 }
