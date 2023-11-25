@@ -11,9 +11,9 @@ namespace Selenify.Common.Utility
 {
     public static class DownloadManager
     {
-        public static async Task DownloadFileWithProgressBarAsync(string fileUrl, string path)
+        public static async Task DownloadFileWithProgressBarAsync(string fileUrl, string path, string progressPrefix = "")
         {
-            var progress = new ConsoleProgressBar();
+            var progress = new ConsoleProgressBar(progressPrefix);
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(5);

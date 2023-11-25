@@ -12,6 +12,17 @@ namespace Selenify.Common.Utility
         private readonly char progressCharacter = '=';
         private int lineToUpdate = Console.UI.LineCount;
 
+        private string Prefix {  get; set; }
+
+        public ConsoleProgressBar(string prefix)
+        {
+            Prefix = prefix;
+        }
+
+        public ConsoleProgressBar() {
+            Prefix = string.Empty;
+        }
+
         public void Report(float value)
         {
             string percentage = Math.Round(value * 100, 2).ToString().PadLeft(5) + "%";
@@ -20,7 +31,7 @@ namespace Selenify.Common.Utility
             string text = "[" + new string('#', progressBlockCount) +
                 new string('-', blockCount - progressBlockCount) + "]" + percentage;
 
-            System.Console.Write("\r" + text);
+            System.Console.Write("\r" + Prefix + text);
 
             if (value == 1)
                 System.Console.Write("\r" + new string(' ', System.Console.BufferWidth) + "\r");
