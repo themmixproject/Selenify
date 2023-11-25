@@ -114,7 +114,7 @@ namespace Selenify.Processes
             FileManager.CreateDirectoryIfNotExists( downloadsDirPath );
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
-            await DownloadManager.DownloadFileWithProgressBarAsync(imageSource, savePath + imageName);
+            await DownloadManager.DownloadFileWithProgressBarAsync(imageSource, savePath + imageName, "Downloading " + imageName + ". . .");
         }
 
         private string GetProjectDirectoryPath()
@@ -123,12 +123,6 @@ namespace Selenify.Processes
                 Directory.GetCurrentDirectory()!
             )!.Parent!.Parent!.FullName;
         }
-
-        private void DownloaProgressCallback(object sender, DownloadProgressChangedEventArgs e)
-        {
-            System.Console.Write($"\rDownloaded {e.BytesReceived} of {e.TotalBytesToReceive} bytes ({e.ProgressPercentage}%)");
-        }
-
 
         private ReadOnlyCollection<IWebElement> GetInventoryItems()
         {
