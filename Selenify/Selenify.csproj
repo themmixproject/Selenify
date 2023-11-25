@@ -11,13 +11,18 @@
     <PackageReference Include="Selenium.Support" Version="4.15.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Common\Helpers\Tesseract\tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Configurations\Secrets.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Common\Helpers\Tesseract\tessdata\" />
     <Folder Include="Common\References\AutoIt\build\" />
   </ItemGroup>
 <ItemGroup>
