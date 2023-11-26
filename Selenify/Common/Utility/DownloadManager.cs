@@ -18,33 +18,45 @@ namespace Selenify.Common.Utility
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(5);
-                using (var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+
+                string savePath;
+                using (var stream = HttpClientHelper.GetAsync(fileUrl).Result.Content.ReadAsStreamAsync().Result)
+                {
+                    savePath = GetFilePathForDownload(fileUrl, path, stream);
+                }
+
+                using (var file = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     await HttpClientExtensions.DownloadAsync(client, fileUrl, file, progress, new CancellationToken());
                 }
             }
         }
 
-        public static void DownloadFile(string fileUrl, string path)
+        public static async void DownloadFileAsync(string fileUrl, string path)
         {
             HttpResponseMessage response = HttpClientHelper.Get(fileUrl);
             HttpContent responseContent = response.Content;
-            using (var stream = responseContent.ReadAsStreamAsync().Result)
+            using (var stream = await responseContent.ReadAsStreamAsync())
             {
-                string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
-                string fileName = FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
-                string fileExtension = FileHelper.GetFileExtensionFromUrlOrStream( urlWithoutQuery, stream );
-
-                string saveDirectory = Path.GetDirectoryName(path)!;
-                string newFileName = fileName + fileExtension;
-                newFileName = FileHelper.IncrementFileNameIfDuplicate(saveDirectory, newFileName);
-
-                using (FileStream fileStream = new FileStream(Path.Combine(saveDirectory!, newFileName), FileMode.Create, FileAccess.Write))
+                string savePath = GetFilePathForDownload(fileUrl, path, stream);
+                using (FileStream fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
                 {
                     stream.Position = 0;
-                    stream.CopyToAsync(fileStream);
+                    await stream.CopyToAsync(fileStream);
                 }
             }
+        }
+
+        private static string GetFilePathForDownload(string fileUrl, string path, Stream fileStream)
+        {
+            string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
+            string fileName = FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
+            fileName += FileHelper.GetFileExtensionFromUrlOrStream(urlWithoutQuery, fileStream);
+
+            string saveDirectory = Path.GetDirectoryName(path)!;
+            fileName = FileHelper.IncrementFileNameIfDuplicate(saveDirectory, fileName);
+
+            return Path.Combine(saveDirectory!, fileName);
         }
 
 
