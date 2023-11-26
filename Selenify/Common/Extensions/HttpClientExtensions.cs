@@ -34,5 +34,14 @@ namespace Selenify.Common.Extensions
             }
         }
 
+        public static string RemoveQueryParams(string url)
+        {
+            if (url.Contains("?"))
+            {
+                url = url.Substring(0, url.IndexOf("?"));
+            }
+
+            return url;
+        }
     }
 }

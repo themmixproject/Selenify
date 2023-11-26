@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Common\Helpers\Tesseract\tessdata\" />
     <Folder Include="Common\References\AutoIt\build\" />
+    <Folder Include="Downloads\" />
   </ItemGroup>
 <ItemGroup>
 	<Content Include="Common\References\AutoIt\build\*.dll">

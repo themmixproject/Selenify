@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Selenify.Common.Helpers;
+using System.IO;
 
 namespace Selenify.Common.Utility
 {
@@ -30,14 +31,73 @@ namespace Selenify.Common.Utility
             HttpContent responseContent = response.Content;
             using (var stream = responseContent.ReadAsStreamAsync().Result)
             {
-                using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
+                string fileName = GetFileName(urlWithoutQuery, path);
+                string fileExtension = GetFileExtension( urlWithoutQuery, path, stream );
+
+                string saveDirectory = Path.GetDirectoryName(path)!;
+                string newFileName = fileName + fileExtension;
+                newFileName = SetFileNameOccurance(saveDirectory, newFileName);
+
+                using (FileStream fileStream = new FileStream(Path.Combine(saveDirectory!, newFileName), FileMode.Create, FileAccess.Write))
                 {
+                    stream.Position = 0;
                     stream.CopyToAsync(fileStream);
                 }
             }
         }
 
+        private static string SetFileNameOccurance(string path, string fileName)
+        {
+            int occurrence = 0;
+            string fileExtension = Path.GetExtension(fileName);
+            while (File.Exists(Path.Combine(path, fileName)))
+            {
+                occurrence++;
+                fileName = Path.GetFileNameWithoutExtension(fileName) +
+                    " (" + occurrence + ")" +
+                    fileExtension;
+            }
 
-        //add teseract utility
+            return fileName;
+        }
+
+        private static string GetFileName(string url, string path ) {
+            string fileName = Path.GetFileName( path );
+            if (string.IsNullOrEmpty(fileName)) {
+                Uri uri = new Uri(url);
+                fileName = System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath);
+            }
+            if (string.IsNullOrEmpty( fileName )) {
+                fileName = "untitled";
+            }
+
+            return Path.GetFileNameWithoutExtension(fileName);
+        }
+
+        private static string GetFileExtension(string url, string path, Stream stream) {
+            string fileExtension = Path.GetExtension( path );
+            if (string.IsNullOrEmpty(fileExtension)) {
+                fileExtension = Path.GetExtension( url );
+                if (fileExtension[0] == '-' || fileExtension[0] == '.')
+                {
+                    fileExtension = "";
+                }
+            }
+            if(string.IsNullOrEmpty(fileExtension)) {
+                using(MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+
+                    memoryStream.Position = 0;
+
+                    byte[] buffer = new byte[256];
+                    memoryStream.Read(buffer, 0, buffer.Length);
+                    fileExtension = FileExtensions.GetFileExtension(buffer);
+                }
+            }
+
+            return fileExtension;
+        }
     }
 }
