@@ -7,6 +7,7 @@ using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using Selenify.Common.Utility;
 using Selenify.Models.Process;
+using Selenify.Common.Helpers;
 
 internal class Program {
     private static void Main( string[] args ) {
@@ -20,7 +21,7 @@ internal class Program {
 
         System.Console.Write(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent);
         string downloadsDir = Directory.GetParent(Directory.GetCurrentDirectory())!.Parent!.Parent!.FullName + "\\Downloads\\";
-        FileManager.CreateDirectoryIfNotExists( downloadsDir );
+        FileHelper.CreateDirectoryIfNotExists( downloadsDir );
         //DownloadManager.DownloadFile("https://lh4.googleusercontent.com/-MC8WtWcan0I/AAAAAAAAAAI/AAAAAAAAAQI/bSW8SUtaZDU/photo.jpg?sz=192", downloadsDir);
         DownloadManager.DownloadFile("https://th.bing.com/th/id/OIP.-Sf7ke25iuyCKqmNG664GwHaFJ?rs=1&pid=ImgDetMain", downloadsDir);
     }
