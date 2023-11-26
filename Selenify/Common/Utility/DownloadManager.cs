@@ -49,17 +49,18 @@ namespace Selenify.Common.Utility
 
         private static string SetFileNameOccurance(string path, string fileName)
         {
-            int occurrence = 0;
+            int occurrence = 1;
             string fileExtension = Path.GetExtension(fileName);
-            while (File.Exists(Path.Combine(path, fileName)))
+            string newFileName = fileName;
+            while (File.Exists(Path.Combine(path, newFileName)))
             {
                 occurrence++;
-                fileName = Path.GetFileNameWithoutExtension(fileName) +
+                newFileName = Path.GetFileNameWithoutExtension(fileName) +
                     " (" + occurrence + ")" +
                     fileExtension;
             }
 
-            return fileName;
+            return newFileName;
         }
 
         private static string GetFileName(string url, string path ) {
