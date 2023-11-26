@@ -1,4 +1,5 @@
-﻿using Selenify.Common.Utility;
+﻿using Selenify.Common.Helpers;
+using Selenify.Common.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Selenify.Models.Process
         {
             ProcessName = processName;
 
-            FileManager.CreateDirectoryIfNotExists(RunningProcessesDir);
+            FileHelper.CreateDirectoryIfNotExists(RunningProcessesDir);
 
             CreateStateFile();
             LoadState();
@@ -55,7 +56,7 @@ namespace Selenify.Models.Process
             string stateFileName = ProcessName.Replace(" ", "") + ".state.json";
             string stateFilePath = RunningProcessesDir + stateFileName;
 
-            FileManager.CreateFileIfNotExists(stateFilePath);
+            FileHelper.CreateFileIfNotExists(stateFilePath);
 
             if (new FileInfo(stateFilePath).Length == 0)
             {

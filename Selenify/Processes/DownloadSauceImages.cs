@@ -13,6 +13,7 @@ using System.Security.Policy;
 using System.Threading;
 using static Selenify.Common.Utility.WebDriverManager;
 using static Selenify.Common.Extensions.SeleniumExtensions;
+using Selenify.Common.Helpers;
 
 namespace Selenify.Processes
 {
@@ -111,7 +112,7 @@ namespace Selenify.Processes
             string imageName = Path.GetFileName(imageSource);
 
             string downloadsDirPath = GetProjectDirectoryPath() + "\\Downloads\\";
-            FileManager.CreateDirectoryIfNotExists( downloadsDirPath );
+            FileHelper.CreateDirectoryIfNotExists( downloadsDirPath );
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
             await DownloadManager.DownloadFileWithProgressBarAsync(imageSource, savePath + imageName, "Downloading " + imageName + ". . .");
