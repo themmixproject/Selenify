@@ -1,6 +1,7 @@
 ﻿using Selenify.Common.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,35 +56,61 @@ namespace Selenify.Common.Helpers
             return fileName;
         }
 
-        public static string GetFileExtensionFromUrlOrStream(string fileSource, Stream stream)
+        public static string GetFileExtensionFromUrlOrByteArry(string url, byte[] bytes)
         {
-            string fileExtension = Path.GetExtension(fileSource);
+            string fileExtension = Path.GetExtension(url);
             if (fileExtension[0] == '-' || fileExtension[0] == '.')
             {
                 fileExtension = "";
             }
             if (string.IsNullOrEmpty(fileExtension))
             {
-                fileExtension = GetFileExtensionFromStream(stream);
+                fileExtension = GetFileExtensionFromByteBuffer(bytes);
             }
 
             return fileExtension;
         }
 
+
+        public static async Task<string> GetFileExtensionFromUrlOrRequest(string url)
+        {
+            string fileExtension = Path.GetExtension(url);
+            if (fileExtension[0] == '-' || fileExtension[0] == '.')
+            {
+                fileExtension = "";
+            }
+            if (string.IsNullOrEmpty(fileExtension))
+            {
+                fileExtension = await GetFileExtensionFromRequest(url);
+            }
+
+            return fileExtension;
+        }
+
+        public static async Task<string> GetFileExtensionFromRequest(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                using (HttpResponseMessage response = await client.GetAsync(url))
+                {
+                    using (Stream stream = response.Content.ReadAsStream())
+                    {
+                        return GetFileExtensionFromStream(stream);
+                    }
+                }
+            }
+        }
+
         public static string GetFileExtensionFromStream(Stream stream)
         {
             string fileExtension;
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (BufferedStream bufferedStream = new BufferedStream(stream))
             {
-                stream.CopyTo(memoryStream);
-
-                memoryStream.Position = 0;
-
                 byte[] buffer = new byte[256];
-                memoryStream.Read(buffer, 0, buffer.Length);
+                stream.Read(buffer, 0, buffer.Length);
                 fileExtension = GetFileExtensionFromByteBuffer(buffer);
             }
-
+            
             return fileExtension;
         }
 
