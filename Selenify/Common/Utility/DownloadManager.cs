@@ -9,117 +9,34 @@ using Selenify.Common.Helpers;
 using System.IO;
 using static Selenify.Common.Utility.WebDriverManager;
 using System.Net;
+using System.Xml.Linq;
+using System.Threading;
+using Selenify.Models;
 
 namespace Selenify.Common.Utility
 {
     public static class DownloadManager
     {
-        public static async void DownloadFileWithCookiesAndProgressBarAsync(string fileUrl, string path, string progressPrefix)
+        public static async Task DownloadAsync(HttpClient client,  string url, string path)
         {
-            ConsoleProgressBar progressBar = new ConsoleProgressBar();
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = CreateCookieContainerFromWebDriverCookies();
-            using (HttpClient client = new HttpClient(handler))
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                client.Timeout = TimeSpan.FromMinutes(5);
-
-                string savePath;
-                using (Stream stream = client.GetAsync(fileUrl).Result.Content.ReadAsStream())
-                {
-                    savePath = GetFilePathForDownload(fileUrl, path, stream);
-                }
-
-                using (var file = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await HttpClientExtensions.DownloadAsync(client, fileUrl, file, progress, new CancellationToken());
-                }
-            }
-
-        }
-
-        public static async void DownloadFileWithProgressBarAsync(string fileUrl, string path, string progressPrefix = "")
-        {
-            var progress = new ConsoleProgressBar(progressPrefix);
-            using (var client = new HttpClient())
-            {
-                client.Timeout = TimeSpan.FromMinutes(5);
-
-                string savePath;
-                using (var stream = HttpClientHelper.GetAsync(fileUrl).Result.Content.ReadAsStream())
-                {
-                    savePath = GetFilePathForDownload(fileUrl, path, stream);
-                }
-
-                using (var file = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await HttpClientExtensions.DownloadAsync(client, fileUrl, file, progress, new CancellationToken());
-                }
+                await fileStream.Stream.CopyToAsync(fileStream.File);
             }
         }
 
-        public static async void DownloadFileAsync(string fileUrl, string path)
+        public static async Task DownloadWithProgressBarAsync(HttpClient client, string url, string path)
         {
-            HttpResponseMessage response = HttpClientHelper.Get(fileUrl);
-            HttpContent responseContent = response.Content;
-            using (var stream = await responseContent.ReadAsStreamAsync())
+            var progressBar = new ConsoleProgressBar("Downloading File . . . ");
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                string savePath = GetFilePathForDownload(fileUrl, path, stream);
-                using (FileStream fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
-                {
-                    stream.Position = 0;
-                    await stream.CopyToAsync(fileStream);
-                }
-            }
-        }
+                long? responseContentLength = fileStream.Response.Content.Headers.ContentLength;
 
-        public static async void DownloadFileWithCookiesAsync(string fileUrl, string path)
-        {
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = CreateCookieContainerFromWebDriverCookies();
-            using(HttpClient tempClient = new HttpClient(handler))
-            {
-                HttpResponseMessage response = await tempClient.GetAsync(fileUrl);
-                HttpContent responseContent = response.Content;
-                using (var stream = await responseContent.ReadAsStreamAsync())
-                {
-                    string savePath = GetFilePathForDownload(fileUrl, path, stream);
-                    using (FileStream fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.Position = 0;
-                        await stream.CopyToAsync(fileStream);
-                    }
-                }
-            }
-        }
-
-
-        private static string GetFilePathForDownload(string fileUrl, string path, Stream fileStream)
-        {
-            string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
-            string fileName = FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
-            fileName += FileHelper.GetFileExtensionFromUrlOrStream(urlWithoutQuery, fileStream);
-
-            string saveDirectory = Path.GetDirectoryName(path)!;
-            fileName = FileHelper.IncrementFileNameIfDuplicate(saveDirectory, fileName);
-
-            return Path.Combine(saveDirectory!, fileName);
-        }
-
-        private static CookieContainer CreateCookieContainerFromWebDriverCookies()
-        {
-            var cookies = Driver.Manage().Cookies.AllCookies;
-            CookieContainer cookieContainer = new CookieContainer();
-            foreach (OpenQA.Selenium.Cookie cookie in cookies)
-            {
-                cookieContainer.Add(
-                    new System.Net.Cookie(
-                        cookie.Name,
-                        cookie.Value,
-                        cookie.Path,
-                        cookie.Domain));
+                var relativeProgress = new Progress<long>(totalbytes => progressBar.Report((float)totalbytes / responseContentLength!.Value));
+                await fileStream.Stream.CopyToAsync(fileStream.File, 81920, relativeProgress, new CancellationToken());
             }
 
-            return cookieContainer;
+            progressBar.Report(1);
         }
     }
 }
