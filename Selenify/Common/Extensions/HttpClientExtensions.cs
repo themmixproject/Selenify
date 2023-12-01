@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Selenify.Common.Utility;
+using Selenify.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,40 +10,36 @@ namespace Selenify.Common.Extensions
 {
     public static class HttpClientExtensions
     {
-        public static async Task DownloadAsync(this HttpClient client, string requestUri, Stream destination, IProgress<float>? progress = null, CancellationToken cancellationToken = default)
+        public static async Task DownloadAsync(HttpClient client, string url, string path)
         {
-            // Get the http headers first to examine the content length
-            using (var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead))
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                var contentLength = response.Content.Headers.ContentLength;
-
-                using (var download = await response.Content.ReadAsStreamAsync(cancellationToken))
-                {
-                    // Ignore progress reporting when no progress reporter was 
-                    // passed or when the content length is unknown
-                    if (progress == null || !contentLength.HasValue)
-                    {
-                        await download.CopyToAsync(destination);
-                        return;
-                    }
-
-                    // Convert absolute progress (bytes downloaded) into relative progress (0% - 100%)
-                    var relativeProgress = new Progress<long>(totalBytes => progress.Report((float)totalBytes / contentLength.Value));
-                    // Use extension method to report progress while downloading
-                    await download.CopyToAsync(destination, 81920, relativeProgress, cancellationToken);
-                }
-                progress.Report(1);  // Ensure progress is reported as 100% after download is completed
+                await fileStream.Stream.CopyToAsync(fileStream.File);
             }
         }
 
-        public static string RemoveQueryParams(string url)
+        public static async Task DownloadAsync(string url, string path)
         {
-            if (url.Contains("?"))
+            await DownloadAsync(HttpClientManager.Client, url, path);
+        }
+
+        public static async Task DownloadWithProgressBarAsync(HttpClient client, string url, string path)
+        {
+            var progressBar = new ConsoleProgressBar("Downloading File . . . ");
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                url = url.Substring(0, url.IndexOf("?"));
+                long? responseContentLength = fileStream.Response.Content.Headers.ContentLength;
+
+                var relativeProgress = new Progress<long>(totalbytes => progressBar.Report((float)totalbytes / responseContentLength!.Value));
+                await fileStream.Stream.CopyToAsync(fileStream.File, 81920, relativeProgress, new CancellationToken());
             }
 
-            return url;
+            progressBar.Report(1);
+        }
+
+        public static async Task DownloadWithProgressBarAsync(string url, string path)
+        {
+            await DownloadWithProgressBarAsync(HttpClientManager.Client, url, path);
         }
     }
 }

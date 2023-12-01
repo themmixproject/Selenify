@@ -115,7 +115,7 @@ namespace Selenify.Processes
             FileHelper.CreateDirectoryIfNotExists( downloadsDirPath );
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
-            await DownloadManager.DownloadWithProgressBarAsync(new HttpClient(), imageSource, savePath + imageName);
+            await HttpClientExtensions.DownloadWithProgressBarAsync(new HttpClient(), imageSource, savePath + imageName);
         }
 
         private string GetProjectDirectoryPath()
