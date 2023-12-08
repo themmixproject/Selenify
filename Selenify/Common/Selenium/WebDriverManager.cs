@@ -3,7 +3,7 @@ using OpenQA.Selenium.Edge;
 using Selenify.Configurations;
 using System.Configuration;
 
-namespace Selenify.Common.Utility
+namespace Selenify.Common.Selenium
 {
     public static class WebDriverManager
     {

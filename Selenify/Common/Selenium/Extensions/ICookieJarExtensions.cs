@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 
-namespace Selenify.Common.Extensions
+namespace Selenify.Common.Selenium.Extensions
 {
     public static class ICookieJarExtensions
     {
@@ -39,7 +39,7 @@ namespace Selenify.Common.Extensions
 
         public static ICookieJar AllFromDomain(this ICookieJar cookieJar, string domain)
         {
-            return GetCookiesFromPredicate(cookieJar, cookie => cookie.Domain.Equals(domain));
+            return cookieJar.GetCookiesFromPredicate(cookie => cookie.Domain.Equals(domain));
         }
     }
 }
