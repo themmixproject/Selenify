@@ -47,7 +47,7 @@ namespace Selenify.Processes
 
         private void LoginUser()
         {
-            AppSettingsSection secretsConfig = Common.Utility.ConfigurationManager.LoadConfig(@".\Configurations\Secrets.config");
+            AppSettingsSection secretsConfig = ConfigurationLoader.LoadSecretsConfig();
             string siteUsername = secretsConfig.Settings["site_username"].Value;
             string sitePassword = secretsConfig.Settings["site_password"].Value;
 

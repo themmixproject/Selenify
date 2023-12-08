@@ -7,13 +7,13 @@ using Selenify.Common.Utility;
 using Selenify.Models.Process;
 using Selenify.Common.Helpers;
 using static Selenify.ApplicationInitializer;
+using Selenify.Processes;
 
 internal class Program {
     private static void Main( string[] args ) {
         StartUp();
 
-        IProcess? selectedProcess = new UserProcessSelectionHandler()
-            .UserSelectProcess();
+        IProcess? selectedProcess = new DownloadSauceImages();
 
         if (selectedProcess != null)
         {

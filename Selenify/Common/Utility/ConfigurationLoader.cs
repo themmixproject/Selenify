@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Selenify.Common.Utility
 {
-    public static class ConfigurationManager
+    public static class ConfigurationLoader
     {
         public static AppSettingsSection LoadConfig(string configPath)
         {
@@ -24,6 +24,11 @@ namespace Selenify.Common.Utility
                 ConfigurationUserLevel.None);
 
             return configuration.AppSettings;
+        }
+
+        public static AppSettingsSection LoadSecretsConfig()
+        {
+            return LoadConfig(@".\Configurations\Secrets.config");
         }
     }
 }
