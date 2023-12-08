@@ -11,7 +11,7 @@ namespace Selenify.Common.Http
 {
     public static class HttpClientExtensions
     {
-        public static async Task DownloadAsync(HttpClient client, string url, string path)
+        public static async Task DownloadAsync(this HttpClient client, string url, string path)
         {
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
@@ -19,12 +19,7 @@ namespace Selenify.Common.Http
             }
         }
 
-        public static async Task DownloadAsync(string url, string path)
-        {
-            await DownloadAsync(HttpClientManager.Client, url, path);
-        }
-
-        public static async Task DownloadWithProgressBarAsync(HttpClient client, string url, string path)
+        public static async Task DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
             var progressBar = new ConsoleProgressBar("Downloading File . . . ");
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
@@ -36,11 +31,6 @@ namespace Selenify.Common.Http
             }
 
             progressBar.Report(1);
-        }
-
-        public static async Task DownloadWithProgressBarAsync(string url, string path)
-        {
-            await DownloadWithProgressBarAsync(HttpClientManager.Client, url, path);
         }
     }
 }
