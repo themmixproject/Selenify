@@ -14,6 +14,7 @@ using static Selenify.Common.Utility.WebDriverManager;
 using static Selenify.Common.Extensions.SeleniumExtensions;
 using Selenify.Common.Helpers;
 using Selenify.Common.Http;
+using Selenify.Common.Extensions;
 
 namespace Selenify.Processes
 {
@@ -81,7 +82,7 @@ namespace Selenify.Processes
             {
                 IWebElement inventoryItem = inventoryItems[State.i];
 
-                if (ElementIsStale(inventoryItem))
+                if (inventoryItem.IsStale())
                 {
                     inventoryItems = GetInventoryItems();
                     inventoryItem = inventoryItems[State.i];
