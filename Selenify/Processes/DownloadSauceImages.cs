@@ -13,6 +13,7 @@ using static Selenify.Common.Selenium.WebDriverManager;
 using Selenify.Common.Helpers;
 using Selenify.Common.Http;
 using Selenify.Common.Selenium.Extensions;
+using Selenify.Common.Utility;
 
 namespace Selenify.Processes
 {
@@ -46,11 +47,9 @@ namespace Selenify.Processes
 
         private void LoginUser()
         {
-            AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
-            string siteUsername = secrets.Settings["site_username"].Value;
-            string sitePassword = secrets.Settings["site_password"].Value;
-
-            Configurations.ConfigurationManager.UnloadSecretsConfig();
+            AppSettingsSection secretsConfig = Common.Utility.ConfigurationManager.LoadConfig(@".\Configurations\Secrets.config");
+            string siteUsername = secretsConfig.Settings["site_username"].Value;
+            string sitePassword = secretsConfig.Settings["site_password"].Value;
 
             WebDriverWait loginWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
             loginWait.Until(ExpectedConditions.ElementIsVisible(By.Id("user-name")));

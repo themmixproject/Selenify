@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
+using Selenify.Common.Utility;
 using Selenify.Configurations;
 using System.Configuration;
 
@@ -51,8 +52,10 @@ namespace Selenify.Common.Selenium
             options.AddArgument("--disable-features=msShowSignInIndicator");
             options.AddArgument("--log-level=3");
 
-            AppSettingsSection secrets = Configurations.ConfigurationManager.Secrets;
-            string profilePath = secrets.Settings["edge_profile_path"].Value;
+            AppSettingsSection secretsConfig = NewConfigurationManager.LoadConfig(
+                @".\Configurations\Secrets.config");
+
+            string profilePath = secretsConfig.Settings["edge_profile_path"].Value;
             options.AddArgument("user-data-dir=" + profilePath);
 
             return options;
