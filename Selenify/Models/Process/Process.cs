@@ -22,7 +22,7 @@ namespace Selenify.Models.Process
         {
             ProcessName = processName;
 
-            FileHelper.CreateDirectoryIfNotExists(RunningProcessesDir);
+            Directory.CreateDirectory(RunningProcessesDir);
 
             CreateStateFile();
             LoadState();

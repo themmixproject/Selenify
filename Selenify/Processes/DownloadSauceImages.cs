@@ -112,7 +112,7 @@ namespace Selenify.Processes
             string imageName = Path.GetFileName(imageSource);
 
             string downloadsDirPath = GetProjectDirectoryPath() + "\\Downloads\\";
-            FileHelper.CreateDirectoryIfNotExists( downloadsDirPath );
+            Directory.CreateDirectory(downloadsDirPath);
 
             string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
             await HttpClientExtensions.DownloadWithProgressBarAsync(new HttpClient(), imageSource, savePath + imageName);

@@ -10,14 +10,6 @@ namespace Selenify.Common.Helpers
 {
     public static class FileHelper
     {
-        public static void CreateDirectoryIfNotExists(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-        }
-
         public static void CreateFileIfNotExists(string path)
         {
             if (!File.Exists(path))

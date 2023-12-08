@@ -14,7 +14,7 @@ namespace Selenify
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
             string tempDirectoryPath = Path.Combine(assemblyLocation, "tmp");
 
-            Common.Helpers.FileHelper.CreateDirectoryIfNotExists(tempDirectoryPath);
+            Directory.CreateDirectory(tempDirectoryPath);
         }
     }
 }
