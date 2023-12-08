@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Helpers
+namespace Selenify.Common.Http
 {
     public static class HttpClientHelper
     {

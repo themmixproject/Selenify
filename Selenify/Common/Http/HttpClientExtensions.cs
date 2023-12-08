@@ -1,4 +1,5 @@
-﻿using Selenify.Common.Utility;
+﻿using Selenify.Common.Extensions;
+using Selenify.Common.Utility;
 using Selenify.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Extensions
+namespace Selenify.Common.Http
 {
     public static class HttpClientExtensions
     {
