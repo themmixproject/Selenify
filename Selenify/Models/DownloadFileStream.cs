@@ -21,7 +21,6 @@ namespace Selenify.Models
         {
             var downloadFileStream = new DownloadFileStream ();
 
-            client.Timeout = TimeSpan.FromMinutes(5);
             downloadFileStream.Response = await client.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead);
             downloadFileStream.Stream = await downloadFileStream.Response.Content.ReadAsStreamAsync();
 
