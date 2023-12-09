@@ -22,7 +22,7 @@ namespace Selenify.Models
             downloadFileStream.Response = await client.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead);
             downloadFileStream.Stream = await downloadFileStream.Response.Content.ReadAsStreamAsync();
 
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[8];
             int bytesRead = await downloadFileStream.Stream.ReadAsync(buffer, 0, buffer.Length);
             string savePath = GetFilePathForDownload(fileUrl, path, buffer);
 
@@ -37,8 +37,7 @@ namespace Selenify.Models
             string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
             string fileName = FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
 
-
-            fileName += FileHelper.GetFileExtensionFromUrlOrByteArry(urlWithoutQuery, bytes);
+            fileName += FileHelper.GetFileExtensionFromUrlOrByteArray(urlWithoutQuery, bytes);
 
             string saveDirectory = Path.GetDirectoryName(path)!;
             fileName = FileHelper.IncrementFileNameIfDuplicate(saveDirectory, fileName);

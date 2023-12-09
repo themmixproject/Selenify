@@ -1,4 +1,5 @@
-﻿using Selenify.Common.Extensions;
+﻿using FileSignatures;
+using Selenify.Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,7 +49,7 @@ namespace Selenify.Common.Helpers
             return fileName;
         }
 
-        public static string GetFileExtensionFromUrlOrByteArry(string url, byte[] bytes)
+        public static string GetFileExtensionFromUrlOrByteArray(string url, byte[] bytes)
         {
             string fileExtension = Path.GetExtension(url);
             if (fileExtension[0] == '-' || fileExtension[0] == '.')
@@ -57,100 +58,74 @@ namespace Selenify.Common.Helpers
             }
             if (string.IsNullOrEmpty(fileExtension))
             {
-                fileExtension = GetFileExtensionFromByteBuffer(bytes);
+                fileExtension = GetExtensionFromByteArray(bytes);
             }
+
 
             return fileExtension;
         }
 
-
-        public static async Task<string> GetFileExtensionFromUrlOrRequest(string url)
+        public static string GetExtensionFromByteArray(byte[] bytes)
         {
-            string fileExtension = Path.GetExtension(url);
-            if (fileExtension[0] == '-' || fileExtension[0] == '.')
-            {
-                fileExtension = "";
-            }
+            string? fileExtension = GetFileExtensionFromByteBuffer(bytes);
             if (string.IsNullOrEmpty(fileExtension))
             {
-                fileExtension = await GetFileExtensionFromRequest(url);
+                FileFormatInspector inspector = new FileFormatInspector();
+
+                MemoryStream byteStream = new MemoryStream(bytes);
+                fileExtension = "." + inspector.DetermineFileFormat(byteStream)!.Extension;
             }
 
             return fileExtension;
         }
 
-        public static async Task<string> GetFileExtensionFromRequest(string url)
+        public static string? GetFileExtensionFromByteBuffer(byte[] buffer)
         {
-            using (HttpClient client = new HttpClient())
+            string? extension = null;
+            if (buffer.Length < 8)
             {
-                using (HttpResponseMessage response = await client.GetAsync(url))
-                {
-                    using (Stream stream = response.Content.ReadAsStream())
-                    {
-                        return GetFileExtensionFromStream(stream);
-                    }
-                }
-            }
-        }
-
-        public static string GetFileExtensionFromStream(Stream stream)
-        {
-            string fileExtension;
-            using (BufferedStream bufferedStream = new BufferedStream(stream))
-            {
-                byte[] buffer = new byte[256];
-                stream.Read(buffer, 0, buffer.Length);
-                fileExtension = GetFileExtensionFromByteBuffer(buffer);
+                return extension;
             }
             
-            return fileExtension;
-        }
-
-        public static string GetFileExtensionFromByteBuffer(byte[] buffer)
-        {
-            string extension = ".txt";
-            if (buffer.Length >= 2)
+            if (buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF && buffer[3] == 0xE0)
             {
-                if (buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF && buffer[3] == 0xE0)
-                {
-                    extension = ".jfif";
-                }
-                else if (buffer[0] == 0xFF && buffer[1] == 0xD8)
-                {
-                    extension = ".jpg";
-                }
-                else if (buffer[0] == 0x89 && buffer[1] == 0x50)
-                {
-                    extension = ".png";
-                }
-                else if (buffer[0] == 0x47 && buffer[1] == 0x49)
-                {
-                    extension = ".gif";
-                }
-                else if (buffer[0] == 0x42 && buffer[1] == 0x4D)
-                {
-                    extension = ".bmp";
-                }
-                else if (buffer[0] == 0x30 && buffer[1] == 0x26 && buffer[2] == 0xB2 && buffer[3] == 0x75)
-                {
-                    extension = ".wmv";
-                }
-                else if (buffer[0] == 0x50 && buffer[1] == 0x4B)
-                {
-                    extension = ".zip";
-                }
-                else if (buffer[0] == 0x66 && buffer[1] == 0x74 && buffer[2] == 0x79 && buffer[3] == 0x70)
-                {
-                    extension = ".mp4";
-                }
-                else if (buffer[0] == 0x6D && buffer[1] == 0x6F && buffer[2] == 0x6F && buffer[3] == 0x76)
-                {
-                    extension = ".mov";
-                }
-                else if (buffer[0] == 0x71 && buffer[1] == 0x74 && buffer[2] == 0x20 && buffer[3] == 0x20)
-                {
-                    extension = ".mov";
-                }
+                extension = ".jfif";
+            }
+            else if (buffer[0] == 0xFF && buffer[1] == 0xD8)
+            {
+                extension = ".jpg";
+            }
+            else if (buffer[0] == 0x89 && buffer[1] == 0x50)
+            {
+                extension = ".png";
+            }
+            else if (buffer[0] == 0x47 && buffer[1] == 0x49)
+            {
+                extension = ".gif";
+            }
+            else if (buffer[0] == 0x42 && buffer[1] == 0x4D)
+            {
+                extension = ".bmp";
+            }
+            else if (buffer[0] == 0x30 && buffer[1] == 0x26 && buffer[2] == 0xB2 && buffer[3] == 0x75)
+            {
+                extension = ".wmv";
+            }
+            else if (buffer[0] == 0x50 && buffer[1] == 0x4B)
+            {
+                extension = ".zip";
+            }
+            else if (buffer[0] == 0x66 && buffer[1] == 0x74 && buffer[2] == 0x79 && buffer[3] == 0x70)
+            {
+                extension = ".mp4";
+            }
+            else if (buffer[0] == 0x6D && buffer[1] == 0x6F && buffer[2] == 0x6F && buffer[3] == 0x76)
+            {
+                extension = ".mov";
+            }
+            else if (buffer[0] == 0x71 && buffer[1] == 0x74 && buffer[2] == 0x20 && buffer[3] == 0x20)
+            {
+                extension = ".mov";
             }
 
             return extension;
