@@ -91,6 +91,10 @@ namespace Selenify.Common.Helpers
             {
                 extension = ".jfif";
             }
+            else if (buffer[0] == 0x52 && buffer[1] == 0x4D && buffer[2] == 0x54 && buffer[3] == 0x41)
+            {
+                extension = ".webm";
+            }
             else if (buffer[0] == 0xFF && buffer[1] == 0xD8)
             {
                 extension = ".jpg";
@@ -119,11 +123,8 @@ namespace Selenify.Common.Helpers
             {
                 extension = ".mp4";
             }
-            else if (buffer[0] == 0x6D && buffer[1] == 0x6F && buffer[2] == 0x6F && buffer[3] == 0x76)
-            {
-                extension = ".mov";
-            }
-            else if (buffer[0] == 0x71 && buffer[1] == 0x74 && buffer[2] == 0x20 && buffer[3] == 0x20)
+            else if (buffer[0] == 0x6D && buffer[1] == 0x6F && buffer[2] == 0x6F && buffer[3] == 0x76 ||
+                buffer[0] == 0x71 && buffer[1] == 0x74 && buffer[2] == 20 && buffer[3] == 20)
             {
                 extension = ".mov";
             }
