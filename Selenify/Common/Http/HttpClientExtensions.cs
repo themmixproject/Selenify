@@ -15,7 +15,7 @@ namespace Selenify.Common.Http
         {
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                await fileStream.Stream.CopyToAsync(fileStream.File);
+                await fileStream.Stream!.CopyToAsync(fileStream.File!);
             }
         }
 
@@ -24,10 +24,10 @@ namespace Selenify.Common.Http
             var progressBar = new ConsoleProgressBar("Downloading File . . . ");
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
-                long? responseContentLength = fileStream.Response.Content.Headers.ContentLength;
+                long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
 
                 var relativeProgress = new Progress<long>(totalbytes => progressBar.Report((float)totalbytes / responseContentLength!.Value));
-                await fileStream.Stream.CopyToAsync(fileStream.File, 81920, relativeProgress, new CancellationToken());
+                await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, new CancellationToken());
             }
 
             progressBar.Report(1);

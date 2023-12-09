@@ -11,11 +11,9 @@ namespace Selenify.Models
 {
     public class DownloadFileStream : IDisposable
     {
-        public HttpResponseMessage Response { get; private set; }
-        public Stream Stream { get; set; }
-        public FileStream File { get; private set; }
-
-        private DownloadFileStream () { }
+        public HttpResponseMessage? Response { get; private set; }
+        public Stream? Stream { get; set; }
+        public FileStream? File { get; private set; }
 
         public static async Task<DownloadFileStream> CreateAsync(HttpClient client, string fileUrl, string path)
         {

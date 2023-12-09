@@ -8,10 +8,6 @@ namespace Selenify.Common.Utility
 {
     public class ConsoleProgressBar : IProgress<float>
     {
-        private int barSize = System.Console.BufferWidth;
-        private readonly char progressCharacter = '=';
-        private int lineToUpdate = Console.UI.LineCount;
-
         private string Prefix {  get; set; }
 
         public ConsoleProgressBar(string prefix)
