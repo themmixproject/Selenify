@@ -33,6 +33,9 @@
 	</Content>
 </ItemGroup>
 <ItemGroup>
+  <ProjectReference Include="..\Selenify.Common\Selenify.Common.csproj" />
+</ItemGroup>
+<ItemGroup>
   <Reference Include="AutoItX3.Assembly">
     <HintPath>Common\References\AutoIt\AutoItX3.Assembly.dll</HintPath>
   </Reference>
