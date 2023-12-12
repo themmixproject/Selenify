@@ -15,15 +15,11 @@
     <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Common\Helpers\Tesseract\tessdata\eng.traineddata">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Configurations\Secrets.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\Helpers\Tesseract\tessdata\" />
     <Folder Include="Common\References\AutoIt\build\" />
     <Folder Include="Downloads\" />
   </ItemGroup>
