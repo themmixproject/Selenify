@@ -1,6 +1,6 @@
 ﻿using Selenify.Common.Extensions;
+using Selenify.Common.Models;
 using Selenify.Common.Utility;
-using Selenify.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
