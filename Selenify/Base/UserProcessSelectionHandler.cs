@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium.Internal;
-using Selenify.Models.Process;
+using Selenify.Base.Models.Process;
+using Selenify.Common.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
-namespace Selenify.Common.Utility
+namespace Selenify.Base
 {
     public class UserProcessSelectionHandler
     {

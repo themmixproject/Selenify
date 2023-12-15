@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using Selenify.Models.Process;
 using SeleniumExtras.WaitHelpers;
 using System;
 using System.Collections.ObjectModel;
@@ -14,6 +13,7 @@ using Selenify.Selenium.Extensions;
 using Selenify.Common.Helpers;
 using Selenify.Common.Http;
 using Selenify.Common.Utility;
+using Selenify.Base.Models.Process;
 
 namespace Selenify.Processes
 {

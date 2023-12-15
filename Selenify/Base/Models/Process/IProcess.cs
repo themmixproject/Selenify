@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Models.Process
+namespace Selenify.Base.Models.Process
 {
     public interface IProcess
     {
