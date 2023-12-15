@@ -9,10 +9,10 @@ using System.Configuration;
 using System.Net;
 using System.Security.Policy;
 using System.Threading;
-using static Selenify.Common.Selenium.WebDriverManager;
+using static Selenify.Selenium.WebDriverManager;
+using Selenify.Selenium.Extensions;
 using Selenify.Common.Helpers;
 using Selenify.Common.Http;
-using Selenify.Common.Selenium.Extensions;
 using Selenify.Common.Utility;
 
 namespace Selenify.Processes

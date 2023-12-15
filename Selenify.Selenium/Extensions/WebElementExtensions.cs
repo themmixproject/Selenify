@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Selenium.Extensions
+namespace Selenify.Selenium.Extensions
 {
     public static class WebElementExtensions
     {

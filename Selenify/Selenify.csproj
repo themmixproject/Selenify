@@ -29,6 +29,7 @@
 </ItemGroup>
 <ItemGroup>
   <ProjectReference Include="..\Selenify.Common\Selenify.Common.csproj" />
+  <ProjectReference Include="..\Selenify.Selenium\Selenify.Selenium.csproj" />
 </ItemGroup>
 <ItemGroup>
   <Reference Include="AutoItX3.Assembly">

@@ -5,8 +5,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
+using Selenify.Selenium.Extensions;
 
-namespace Selenify.Common.Selenium.Extensions
+namespace Selenify.Selenium.Extensions
 {
     public static class ICookieJarExtensions
     {
