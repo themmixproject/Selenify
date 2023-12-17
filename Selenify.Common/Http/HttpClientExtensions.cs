@@ -11,26 +11,34 @@ namespace Selenify.Common.Http
 {
     public static class HttpClientExtensions
     {
-        public static async Task DownloadAsync(this HttpClient client, string url, string path)
+        public static async Task<string> DownloadAsync(this HttpClient client, string url, string path)
         {
+            string filePath;
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
                 await fileStream.Stream!.CopyToAsync(fileStream.File!);
+                filePath = fileStream.File!.Name;
             }
+
+            return filePath;
         }
 
-        public static async Task DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
+        public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
-            var progressBar = new ConsoleProgressBar("Downloading File . . . ");
+            string filePath;
+            ConsoleProgressBar progressBar = new ConsoleProgressBar("Downloading File . . . ");
             using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
                 long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
 
-                var relativeProgress = new Progress<long>(totalbytes => progressBar.Report((float)totalbytes / responseContentLength!.Value));
+                var relativeProgress = new Progress<long>(totalBytes => progressBar.Report((float)totalBytes / responseContentLength!.Value));
                 await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, new CancellationToken());
+                filePath = fileStream.File!.Name;
             }
 
             progressBar.Report(1);
+
+            return filePath;
         }
     }
 }
