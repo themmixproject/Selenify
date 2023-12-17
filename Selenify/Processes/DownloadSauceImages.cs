@@ -14,6 +14,7 @@ using Selenify.Common.Helpers;
 using Selenify.Common.Http;
 using Selenify.Common.Utility;
 using Selenify.Base.Models.Process;
+using Console = Selenify.Common.Utility.Console;
 
 namespace Selenify.Processes
 {
@@ -112,8 +113,7 @@ namespace Selenify.Processes
             string downloadsDirPath = GetProjectDirectoryPath() + "\\Downloads\\";
             Directory.CreateDirectory(downloadsDirPath);
 
-            string savePath = GetProjectDirectoryPath() + "\\Downloads\\";
-            await HttpClientManager.Client.DownloadWithProgressBarAsync(imageSource, savePath + imageName);
+            await HttpClientManager.Client.DownloadToTempFolder(imageSource, imageName);
         }
 
         private string GetProjectDirectoryPath()

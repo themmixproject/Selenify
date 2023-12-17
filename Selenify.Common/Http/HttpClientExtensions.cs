@@ -40,5 +40,15 @@ namespace Selenify.Common.Http
 
             return filePath;
         }
+
+        public static async Task<string> DownloadToTempFolder(this HttpClient client, string url)
+        {
+            return await client.DownloadAsync(url, "tmp\\");
+        }
+
+        public static async Task<string> DownloadToTempFolder(this HttpClient client, string url, string imageName)
+        {
+            return await client.DownloadAsync(url, "tmp\\" + imageName);
+        }
     }
 }
