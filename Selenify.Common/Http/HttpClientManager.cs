@@ -25,7 +25,7 @@ namespace Selenify.Common.Http
 
         private static HttpClient CreateNewClient()
         {
-            RequestErrorHandler errorHandler = new Selenify.Common.Http.RequestErrorHandler();
+            RequestErrorHandler errorHandler = new RequestErrorHandler();
             return new HttpClient(errorHandler);
         }
 
