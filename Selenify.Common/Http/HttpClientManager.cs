@@ -16,11 +16,17 @@ namespace Selenify.Common.Http
             {
                 if (_client == null)
                 {
-                    _client = new HttpClient();
+                    _client = CreateNewClient();
                 }
 
                 return _client;
             }
+        }
+
+        private static HttpClient CreateNewClient()
+        {
+            RequestErrorHandler errorHandler = new Selenify.Common.Http.RequestErrorHandler();
+            return new HttpClient(errorHandler);
         }
 
         public static void Dispose()
