@@ -10,7 +10,6 @@ using System.Security.Policy;
 using System.Threading;
 using static Selenify.Selenium.WebDriverManager;
 using Selenify.Selenium.Extensions;
-using Selenify.Common.Helpers;
 using Selenify.Common.Http;
 using Selenify.Common.Utility;
 using Selenify.Base.Models.Process;

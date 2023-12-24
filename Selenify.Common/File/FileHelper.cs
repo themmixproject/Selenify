@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Helpers
+namespace Selenify.Common.File
 {
     public static class FileHelper
     {
         public static void CreateFileIfNotExists(string path)
         {
-            if (!File.Exists(path))
+            if (!System.IO.File.Exists(path))
             {
-                File.Create(path);
+                System.IO.File.Create(path);
             }
         }
 
@@ -24,7 +24,7 @@ namespace Selenify.Common.Helpers
             int occurrence = 1;
             string fileExtension = Path.GetExtension(fileName);
             string newFileName = fileName;
-            while (File.Exists(Path.Combine(path, newFileName)))
+            while (System.IO.File.Exists(Path.Combine(path, newFileName)))
             {
                 occurrence++;
                 newFileName = Path.GetFileNameWithoutExtension(fileName) +
@@ -41,7 +41,7 @@ namespace Selenify.Common.Helpers
             Uri uri = new Uri(url);
             fileName = Path.GetFileNameWithoutExtension(uri.LocalPath);
 
-            if(string.IsNullOrEmpty(fileName) )
+            if (string.IsNullOrEmpty(fileName))
             {
                 fileName = "untitled";
             }
@@ -86,7 +86,7 @@ namespace Selenify.Common.Helpers
             {
                 return extension;
             }
-            
+
             if (buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF && buffer[3] == 0xE0)
             {
                 extension = ".jfif";

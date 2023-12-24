@@ -4,7 +4,6 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using Selenify.Common.Utility;
-using Selenify.Common.Helpers;
 using static Selenify.ApplicationInitializer;
 using Selenify.Processes;
 using Selenify.Common.Http;

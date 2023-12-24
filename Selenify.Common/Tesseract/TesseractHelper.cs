@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tesseract;
 
-namespace Selenify.Common.Helpers.Tesseract
+namespace Selenify.Common.Tesseract
 {
     public static class TesseractHelper
     {

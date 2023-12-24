@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net;
 using System.IO;
+using Selenify.Common.File;
 
 namespace Selenify.Common.Wget
 {
@@ -51,36 +52,30 @@ namespace Selenify.Common.Wget
 
         private class TemporaryCookieFile : IDisposable
         {
-            public string CookieFile{  get; set; }
+            public TempFile CookieFile {  get; set; }
             public TemporaryCookieFile(CookieContainer cookieContainer)
             {
-                CookieFile = Path.GetTempFileName();
-                using (var fileStream = File.Create(CookieFile))
+                CookieFile = new TempFile();
+                using (var writer = new StreamWriter(CookieFile.FileStream))
                 {
-                    using (var writer = new StreamWriter(fileStream))
+                    foreach(Cookie cookie in cookieContainer.GetAllCookies())
                     {
-                        foreach(Cookie cookie in cookieContainer.GetAllCookies())
-                        {
-                            writer.WriteLine(
-                                "{0}\tTRUE\t{1}\t{2}\t{3}\t{4}\t{5}",
-                                cookie.Domain,
-                                cookie.Path,
-                                cookie.Secure ? "TRUE" : "FALSE",
-                                cookie.Expires == DateTime.MinValue ? "0" : ((DateTimeOffset)cookie.Expires).ToUnixTimeSeconds().ToString(),
-                                cookie.Name,
-                                cookie.Value
-                            );
-
-                        }
+                        writer.WriteLine(
+                            "{0}\tTRUE\t{1}\t{2}\t{3}\t{4}\t{5}",
+                            cookie.Domain,
+                            cookie.Path,
+                            cookie.Secure ? "TRUE" : "FALSE",
+                            cookie.Expires == DateTime.MinValue ? "0" : ((DateTimeOffset)cookie.Expires).ToUnixTimeSeconds().ToString(),
+                            cookie.Name,
+                            cookie.Value
+                        );
                     }
                 }
-
-
             }
 
             public void Dispose()
             {
-                File.Delete(CookieFile);
+                CookieFile.Dispose();
             }
         }
     }

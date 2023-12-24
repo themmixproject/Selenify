@@ -1,4 +1,4 @@
-﻿using Selenify.Common.Helpers;
+﻿using Selenify.Common.File;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +34,12 @@ namespace Selenify.Common.Models
         private static string GetFilePathForDownload(string fileUrl, string path, byte[] bytes)
         {
             string urlWithoutQuery = new Uri(fileUrl).GetLeftPart(UriPartial.Path);
-            string fileName = FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
+            string fileName = Common.File.FileHelper.GetFileNameFromUrlOrDefault(urlWithoutQuery);
 
-            fileName += FileHelper.GetFileExtensionFromUrlOrByteArray(urlWithoutQuery, bytes);
+            fileName += Common.File.FileHelper.GetFileExtensionFromUrlOrByteArray(urlWithoutQuery, bytes);
 
             string saveDirectory = Path.GetDirectoryName(path)!;
-            fileName = FileHelper.IncrementFileNameIfDuplicate(saveDirectory, fileName);
+            fileName = Common.File.FileHelper.IncrementFileNameIfDuplicate(saveDirectory, fileName);
 
             return Path.Combine(saveDirectory!, fileName);
         }
