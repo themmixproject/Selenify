@@ -370,3 +370,6 @@ Selenify/Downloads/
 
 # Process state store
 Selenify/RunningProcesses
+
+# Wget HSTS (HTTP Strict Transport Security) file
+Dependencies/Executables/Wget/*.wget-hts

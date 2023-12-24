@@ -27,10 +27,13 @@
 </ItemGroup>
 <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
-        <HintPath>..\References\AutoIt\AutoItX3.Assembly.dll</HintPath>
+        <HintPath>..\Dependencies\References\AutoIt\AutoItX3.Assembly.dll</HintPath>
     </Reference>
 </ItemGroup>
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(ProjectDir)..\References\AutoIt\build\*.dll&quot; &quot;$(TargetDir)&quot; /Y /D" />
+    <Exec Command="xcopy &quot;$(ProjectDir)..\Dependencies\References\AutoIt\build\*.dll&quot; &quot;$(TargetDir)&quot; /Y /D" />
+</Target>
+<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(ProjectDir)..\Dependencies\Executables\Wget\wget.exe&quot; &quot;$(TargetDir)&quot; /Y /D" />
 </Target>
 </Project>
