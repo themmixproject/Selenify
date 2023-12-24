@@ -4,6 +4,7 @@ using Selenify.Common.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,6 +50,13 @@ namespace Selenify.Common.Http
         public static async Task<string> DownloadToTempFolder(this HttpClient client, string url, string imageName)
         {
             return await client.DownloadAsync(url, "tmp\\" + imageName);
+        }
+
+        public static void SetBasicAuthHeader(this HttpClient client, string username, string password)
+        {
+            byte[] asciiString = System.Text.Encoding.ASCII.GetBytes(username + ":" + password);
+            string authString = Convert.ToBase64String(asciiString);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authString);
         }
     }
 }
