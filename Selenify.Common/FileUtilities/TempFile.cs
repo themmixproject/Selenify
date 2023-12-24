@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.File
+namespace Selenify.Common.FileUtilities
 {
     public class TempFile : IDisposable
     {

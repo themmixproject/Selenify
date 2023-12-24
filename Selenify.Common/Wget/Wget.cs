@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net;
 using System.IO;
-using Selenify.Common.File;
+using Selenify.Common.FileUtilities;
 
 namespace Selenify.Common.Wget
 {

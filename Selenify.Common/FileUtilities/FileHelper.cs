@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.File
+namespace Selenify.Common.FileUtilities
 {
     public static class FileHelper
     {
         public static void CreateFileIfNotExists(string path)
         {
-            if (!System.IO.File.Exists(path))
+            if (!File.Exists(path))
             {
-                System.IO.File.Create(path);
+                File.Create(path);
             }
         }
 
@@ -24,7 +24,7 @@ namespace Selenify.Common.File
             int occurrence = 1;
             string fileExtension = Path.GetExtension(fileName);
             string newFileName = fileName;
-            while (System.IO.File.Exists(Path.Combine(path, newFileName)))
+            while (File.Exists(Path.Combine(path, newFileName)))
             {
                 occurrence++;
                 newFileName = Path.GetFileNameWithoutExtension(fileName) +
