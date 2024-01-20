@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,11 @@ namespace Selenify.Common.Utility
     {
         public static void WriteLine(string s)
         {
-            UI.Clear();
             System.Console.WriteLine(s);
         }
 
         public static void Write(string s, params object[] args)
         {
-            UI.Clear();
             System.Console.Write(s, args);
         }
 
@@ -29,8 +28,11 @@ namespace Selenify.Common.Utility
 
             public static void Clear()
             {
-                ClearOutputBelow(0);
-                Lines.Clear();
+                lock(_lock)
+                {
+                    ClearOutputBelow(0);
+                    Lines.Clear();
+                }
             }
 
             public static void WriteLines(params string[] texts)
@@ -42,7 +44,10 @@ namespace Selenify.Common.Utility
                     foreach (string text in texts)
                     {
                         var lineTexts = text.Split('\n');
-                        Lines.AddRange(lineTexts);
+                        foreach(string line in lineTexts)
+                        {
+                            Lines.Add(line);
+                        }
 
                         System.Console.WriteLine(text);
                     }
@@ -53,11 +58,14 @@ namespace Selenify.Common.Utility
             {
                 lock (_lock)
                 {
-                    Thread.Sleep(200);
                     Clear();
 
                     string[] texts = text.Split("\n");
-                    Lines.AddRange(texts);
+                    foreach (string line in texts)
+                    {
+                        Lines.Add(line);
+                    }
+
                     System.Console.WriteLine(text);
                 }
             }
@@ -65,9 +73,13 @@ namespace Selenify.Common.Utility
             public static void AppendLine(string text)
             {
                 lock (_lock)
-                {
+                {                    
                     string[] texts = text.Split("\n");
-                    Lines.AddRange(texts);
+                    foreach (string line in texts)
+                    {
+                        Lines.Add(line);
+                    }
+
                     System.Console.WriteLine(text);
                 }
             }
@@ -127,7 +139,11 @@ namespace Selenify.Common.Utility
 
             private static void ClearOutputBelow(int lineIndex)
             {
-                int height = CalculateLineHeightUntilPosition(lineIndex);
+                int height = 0;
+                lock ( _lock)
+                {
+                    height = CalculateLineHeightUntilPosition(lineIndex);
+                }
 
                 System.Console.SetCursorPosition(
                 0, System.Console.CursorTop - height);
@@ -144,9 +160,12 @@ namespace Selenify.Common.Utility
 
             private static void ExtendLinesIfIndexOutOfRange(int lineIndex)
             {
-                while (lineIndex >= Lines.Count)
+                lock( _lock)
                 {
-                    Lines.Add("");
+                    while (lineIndex >= Lines.Count)
+                    {
+                        Lines.Add("");
+                    }
                 }
             }
 
@@ -163,7 +182,10 @@ namespace Selenify.Common.Utility
 
             public static void Stop()
             {
-                Lines.Clear();
+                lock(_lock)
+                {
+                    Lines.Clear();
+                }
             }
         }
     }
