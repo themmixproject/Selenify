@@ -27,17 +27,31 @@ namespace Selenify.Common.Http
         public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
             string filePath;
-            ConsoleProgressBar progressBar = new ConsoleProgressBar("Downloading File . . . ");
-            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            using (ConsoleProgressBar progressBar = new ConsoleProgressBar("Downloading File . . ."))
             {
-                long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
+                using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
+                {
+                    long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
 
-                var relativeProgress = new Progress<long>(totalBytes => progressBar.Report((float)totalBytes / responseContentLength!.Value));
-                await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, new CancellationToken());
-                filePath = fileStream.File!.Name;
+                    var relativeProgress = new Progress<long>(totalBytes =>
+                    {
+                        float percentage = (float)totalBytes / responseContentLength!.Value;
+                        if (percentage == 1)
+                        {
+                            cancellationTokenSource.Cancel();
+                        }
+                        progressBar.Report(percentage);
+                    });
+
+                    await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, cancellationToken);
+                    filePath = fileStream.File!.Name;
+                }
+
+                progressBar.Report(1);
+                await Task.Delay(100); // Wait for 1 second before disposing of the progress bar
             }
-
-            progressBar.Report(1);
 
             return filePath;
         }
