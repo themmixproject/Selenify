@@ -97,7 +97,7 @@ namespace Selenify.Common.Utility
                 outputBuilder.Append('\b', overlapCount);
             }
 
-            Utility.Console.UI.AppendLine(text);
+            Utility.Console.UI.WriteLine(text);
             currentText = text;
         }
 
@@ -114,27 +114,5 @@ namespace Selenify.Common.Utility
                 Report(1);
             }
         }
-
-
-
-        //public void Report(float value)
-        //{
-        //    if (hasFinished)
-        //    {
-        //        return;
-        //    }
-        //    string percentage = Math.Round(value * 100, 2).ToString().PadLeft(5) + "%";
-        //    int blockCount = 20;
-        //    int progressBlockCount = (int)(blockCount * value);
-        //    string text = "[" + new string('#', progressBlockCount) +
-        //        new string('-', blockCount - progressBlockCount) + "]" + percentage;
-
-        //    NetArchive.Common.Utility.Console.UI.WriteLine(Prefix + text);
-
-        //    if (value == 1)
-        //    {
-        //        hasFinished = true;
-        //    }
-        //}
     }
 }
