@@ -43,13 +43,7 @@ namespace Selenify.Common.Utility
 
                     foreach (string text in texts)
                     {
-                        var lineTexts = text.Split('\n');
-                        foreach(string line in lineTexts)
-                        {
-                            Lines.Add(line);
-                        }
-
-                        System.Console.WriteLine(text);
+                        AppendLine(text);
                     }
                 }
             }
@@ -59,14 +53,7 @@ namespace Selenify.Common.Utility
                 lock (_lock)
                 {
                     Clear();
-
-                    string[] texts = text.Split("\n");
-                    foreach (string line in texts)
-                    {
-                        Lines.Add(line);
-                    }
-
-                    System.Console.WriteLine(text);
+                    AppendLine(text);
                 }
             }
 
@@ -75,10 +62,7 @@ namespace Selenify.Common.Utility
                 lock (_lock)
                 {                    
                     string[] texts = text.Split("\n");
-                    foreach (string line in texts)
-                    {
-                        Lines.Add(line);
-                    }
+                    Lines.AddRange(texts);
 
                     System.Console.WriteLine(text);
                 }
