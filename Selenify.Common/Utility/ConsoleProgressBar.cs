@@ -6,31 +6,135 @@ using System.Threading.Tasks;
 
 namespace Selenify.Common.Utility
 {
-    public class ConsoleProgressBar : IProgress<float>
+    public class ConsoleProgressBar : IProgress<float>, IDisposable
     {
-        private string Prefix {  get; set; }
+        bool hasFinished = false;
+
+        private const int blockCount = 10;
+        private string Prefix { get; set; }
+
+        private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 100);
+
+        private readonly Timer timer;
+
+        private float currentProgress = 0;
+        private string currentText = string.Empty;
+
+        private bool disposed = false;
 
         public ConsoleProgressBar(string prefix)
         {
             Prefix = prefix;
+
+            timer = new Timer(TimerHandler!);
+
+            if (!System.Console.IsOutputRedirected)
+            {
+                ResetTimer();
+            }
         }
 
-        public ConsoleProgressBar() {
+        public ConsoleProgressBar()
+        {
             Prefix = string.Empty;
+
+            timer = new Timer(TimerHandler!);
+
+            if (!System.Console.IsOutputRedirected)
+            {
+                ResetTimer();
+            }
         }
 
         public void Report(float value)
         {
-            string percentage = Math.Round(value * 100, 2).ToString().PadLeft(5) + "%";
-            int blockCount = 20;
-            int progressBlockCount = (int)(blockCount * value);
-            string text = "[" + new string('#', progressBlockCount) +
-                new string('-', blockCount - progressBlockCount) + "]" + percentage;
+            // Make sure the value is in [0..1] range
+            value = Math.Max(0, Math.Min(1, value));
+            Interlocked.Exchange(ref currentProgress, value);
+        }
 
-            System.Console.Write("\r" + Prefix + text);
+        private void TimerHandler(object state)
+        {
+            lock (timer)
+            {
+                if (disposed)
+                {
+                    return;
+                }
 
-            if (value == 1)
-                System.Console.Write("\r" + new string(' ', System.Console.BufferWidth) + "\r");
+                int progressBlockCount = (int)(currentProgress * blockCount);
+                int percent = (int)(currentProgress * 100);
+                string text = string.Format("[{0}{1}] {2}%",
+                    new string('#', progressBlockCount), new string('-', blockCount - progressBlockCount),
+                    percent);
+                UpdateText(text);
+
+                ResetTimer();
             }
+        }
+
+        private void UpdateText(string text)
+        {
+            int commonPrefixLength = 0;
+            int commonLength = Math.Min(currentText.Length, text.Length);
+            while (commonPrefixLength < commonLength && text[commonPrefixLength] == currentText[commonPrefixLength])
+            {
+                commonPrefixLength++;
+            }
+
+            // Backtrack to the first differing chracter
+            StringBuilder outputBuilder = new StringBuilder();
+            outputBuilder.Append('\b', currentText.Length - commonPrefixLength);
+
+            // Output new Suffix
+            outputBuilder.Append(text.Substring(commonPrefixLength));
+
+            // If the new text is shorter than the old one: delete overlapping characters
+            int overlapCount = currentText.Length - text.Length;
+            if (overlapCount > 0)
+            {
+                outputBuilder.Append(' ', overlapCount);
+                outputBuilder.Append('\b', overlapCount);
+            }
+
+            Utility.Console.UI.AppendLine(text);
+            currentText = text;
+        }
+
+        private void ResetTimer()
+        {
+            timer.Change(interval, TimeSpan.FromMilliseconds(-1));
+        }
+
+        public void Dispose()
+        {
+            lock (timer)
+            {
+                disposed = true;
+                Report(1);
+            }
+        }
+
+
+
+        //public void Report(float value)
+        //{
+        //    if (hasFinished)
+        //    {
+        //        return;
+        //    }
+        //    string percentage = Math.Round(value * 100, 2).ToString().PadLeft(5) + "%";
+        //    int blockCount = 20;
+        //    int progressBlockCount = (int)(blockCount * value);
+        //    string text = "[" + new string('#', progressBlockCount) +
+        //        new string('-', blockCount - progressBlockCount) + "]" + percentage;
+
+        //    NetArchive.Common.Utility.Console.UI.WriteLine(Prefix + text);
+
+        //    if (value == 1)
+        //    {
+        //        hasFinished = true;
+        //    }
+        //}
     }
 }
