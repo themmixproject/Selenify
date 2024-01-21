@@ -38,11 +38,11 @@ namespace Selenify.Common.Http
                     var relativeProgress = new Progress<long>(totalBytes =>
                     {
                         float percentage = (float)totalBytes / responseContentLength!.Value;
+                        progressBar.Report(percentage);
                         if (percentage == 1)
                         {
                             cancellationTokenSource.Cancel();
                         }
-                        progressBar.Report(percentage);
                     });
 
                     await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, cancellationToken);
@@ -50,7 +50,8 @@ namespace Selenify.Common.Http
                 }
 
                 progressBar.Report(1);
-                await Task.Delay(100); // Wait for 1 second before disposing of the progress bar
+                cancellationTokenSource.Cancel();
+                await Task.Delay(100);
             }
 
             return filePath;

@@ -13,7 +13,7 @@ namespace Selenify.Common.Utility
         private const int blockCount = 10;
         private string Prefix { get; set; }
 
-        private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 100);
+        private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 30);
 
         private readonly Timer timer;
 
