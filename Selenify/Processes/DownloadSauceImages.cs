@@ -45,7 +45,7 @@ namespace Selenify.Processes
             ResetState();
         }
 
-        private void LoginUser()
+        private static void LoginUser()
         {
             AppSettingsSection secretsConfig = ConfigurationLoader.LoadSecretsConfig();
             string siteUsername = secretsConfig.Settings["site_username"].Value;
@@ -100,7 +100,7 @@ namespace Selenify.Processes
             }
         }
 
-        private async void SaveInventoryItemImageAsync()
+        private static async void SaveInventoryItemImageAsync()
         {
             IWebElement inventoryImage = Driver
                 .FindElement(By.Id("inventory_item_container"))
@@ -115,14 +115,14 @@ namespace Selenify.Processes
             await HttpClientManager.Client.DownloadToTempFolder(imageSource, imageName);
         }
 
-        private string GetProjectDirectoryPath()
+        private static string GetProjectDirectoryPath()
         {
             return Directory.GetParent(
                 Directory.GetCurrentDirectory()!
             )!.Parent!.Parent!.FullName;
         }
 
-        private ReadOnlyCollection<IWebElement> GetInventoryItems()
+        private static ReadOnlyCollection<IWebElement> GetInventoryItems()
         {
             return Driver
                 .FindElement(By.Id("inventory_container"))
