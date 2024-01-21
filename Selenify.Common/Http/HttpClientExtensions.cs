@@ -1,4 +1,4 @@
-using Selenify.Common.Extensions;
+﻿using Selenify.Common.Extensions;
 using Selenify.Common.Models;
 using Selenify.Common.Utility;
 using Selenify.Common.Console;
@@ -40,19 +40,13 @@ namespace Selenify.Common.Http
                     {
                         float percentage = (float)totalBytes / responseContentLength!.Value;
                         progressBar.Report(percentage);
-                        if (percentage == 1)
-                        {
-                            cancellationTokenSource.Cancel();
-                        }
                     });
 
                     await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, cancellationToken);
                     filePath = fileStream.File!.Name;
                 }
 
-                progressBar.Report(1);
                 cancellationTokenSource.Cancel();
-                await Task.Delay(100);
             }
 
             return filePath;

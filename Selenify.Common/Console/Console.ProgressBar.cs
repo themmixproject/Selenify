@@ -10,12 +10,12 @@ namespace Selenify.Common.Console
     {
         public class ProgressBar : IProgress<float>, IDisposable
         {
-            bool hasFinished = false;
+            bool isCompleted = false;
 
             private const int blockCount = 10;
             private string Prefix { get; set; }
 
-            private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 30);
+            private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 15);
 
             private readonly Timer timer;
 
@@ -53,6 +53,11 @@ namespace Selenify.Common.Console
                 // Make sure the value is in [0..1] range
                 value = Math.Max(0, Math.Min(1, value));
                 Interlocked.Exchange(ref currentProgress, value);
+
+                if(value == 1)
+                {
+                    isCompleted = true;
+                }
             }
 
             private void TimerHandler(object state)
@@ -112,8 +117,13 @@ namespace Selenify.Common.Console
             {
                 lock (timer)
                 {
+                    if (!isCompleted)
+                    {
+                        Report(1);
+                        TimerHandler(new object());
+                    }
+
                     disposed = true;
-                    Report(1);
                 }
             }
         }
