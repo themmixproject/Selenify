@@ -29,7 +29,7 @@ namespace Selenify.Common.Http
             string filePath;
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-            using (ConsoleProgressBar progressBar = new ConsoleProgressBar("Downloading File . . ."))
+            using (Utility.Console.ProgressBar progressBar = new Utility.Console.ProgressBar("Downloading File . . ."))
             {
                 using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
                 {
