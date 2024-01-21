@@ -16,7 +16,7 @@ namespace Selenify.Base
 {
     public class UserProcessSelectionHandler
     {
-        private List<IProcess> Processes;
+        private readonly List<IProcess> Processes;
         private readonly int ProcessCount;
 
         public UserProcessSelectionHandler()
@@ -25,7 +25,7 @@ namespace Selenify.Base
             ProcessCount = Processes.Count;
         }
 
-        private List<IProcess> GetProcesses()
+        private static List<IProcess> GetProcesses()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes()
@@ -117,7 +117,7 @@ namespace Selenify.Base
             }
         }
 
-        private bool IsUserSelectionConfirmed(ConsoleKey key)
+        private static bool IsUserSelectionConfirmed(ConsoleKey key)
         {
             if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
             {

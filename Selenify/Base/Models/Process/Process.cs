@@ -14,7 +14,7 @@ namespace Selenify.Base.Models.Process
         public string ProcessName { get; set; } = string.Empty;
         public T State { get; set; } = default!;
 
-        private string RunningProcessesDir = Directory.GetCurrentDirectory()! + "\\RunningProcesses\\";
+        private readonly string RunningProcessesDir = Directory.GetCurrentDirectory()! + "\\RunningProcesses\\";
 
         public abstract void Run();
 
