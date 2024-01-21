@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
+using Selenify.Common.Console;
 using Selenify.Common.Utility;
 using System.Configuration;
 

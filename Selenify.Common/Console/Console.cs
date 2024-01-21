@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Utility
+namespace Selenify.Common.Console
 {
     public static partial class Console
     {

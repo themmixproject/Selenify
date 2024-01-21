@@ -1,6 +1,7 @@
-﻿using Selenify.Common.Extensions;
+using Selenify.Common.Extensions;
 using Selenify.Common.Models;
 using Selenify.Common.Utility;
+using Selenify.Common.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Selenify.Common.Http
             string filePath;
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-            using (Utility.Console.ProgressBar progressBar = new Utility.Console.ProgressBar("Downloading File . . ."))
+            using (Console.Console.ProgressBar progressBar = new Console.Console.ProgressBar("Downloading File . . ."))
             {
                 using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
                 {

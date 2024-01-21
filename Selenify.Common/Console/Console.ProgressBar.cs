@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Utility
+namespace Selenify.Common.Console
 {
     public partial class Console
     {
@@ -99,7 +99,7 @@ namespace Selenify.Common.Utility
                     outputBuilder.Append('\b', overlapCount);
                 }
 
-                Utility.Console.UI.WriteLine(text);
+                UI.WriteLine(text);
                 currentText = text;
             }
 

@@ -10,7 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
-using Console = Selenify.Common.Utility.Console;
+using Console = Selenify.Common.Console.Console;
 
 namespace Selenify.Base
 {

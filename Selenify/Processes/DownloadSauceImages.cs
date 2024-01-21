@@ -13,7 +13,7 @@ using Selenify.Selenium.Extensions;
 using Selenify.Common.Http;
 using Selenify.Common.Utility;
 using Selenify.Base.Models.Process;
-using Console = Selenify.Common.Utility.Console;
+using Console = Selenify.Common.Console;
 
 namespace Selenify.Processes
 {
