@@ -10,8 +10,8 @@ namespace Selenify.Common.Console
     {
         public static class UI
         {
-            private static List<string> Lines = new List<string>();
-            private static object _lock = new object();
+            private static readonly List<string> Lines = new List<string>();
+            private static readonly object _lock = new object();
 
             public static int LineCount { get { return Lines.Count; } }
 

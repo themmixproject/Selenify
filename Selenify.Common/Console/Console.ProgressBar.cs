@@ -10,7 +10,7 @@ namespace Selenify.Common.Console
     {
         public class ProgressBar : IProgress<float>, IDisposable
         {
-            bool isCompleted = false;
+            private bool IsCompleted { get; set; } = false;
 
             private const int blockCount = 10;
             private string Prefix { get; set; }
@@ -56,7 +56,7 @@ namespace Selenify.Common.Console
 
                 if(value == 1)
                 {
-                    isCompleted = true;
+                    IsCompleted = true;
                 }
             }
 
@@ -74,6 +74,7 @@ namespace Selenify.Common.Console
                     string text = string.Format("[{0}{1}] {2}%",
                         new string('#', progressBlockCount), new string('-', blockCount - progressBlockCount),
                         percent);
+
                     UpdateText(text);
 
                     ResetTimer();
@@ -94,7 +95,7 @@ namespace Selenify.Common.Console
                 outputBuilder.Append('\b', currentText.Length - commonPrefixLength);
 
                 // Output new Suffix
-                outputBuilder.Append(text.Substring(commonPrefixLength));
+                outputBuilder.Append(text.AsSpan(commonPrefixLength));
 
                 // If the new text is shorter than the old one: delete overlapping characters
                 int overlapCount = currentText.Length - text.Length;
@@ -117,7 +118,7 @@ namespace Selenify.Common.Console
             {
                 lock (timer)
                 {
-                    if (!isCompleted)
+                    if (!IsCompleted)
                     {
                         Report(1);
                         TimerHandler(new object());
@@ -125,6 +126,8 @@ namespace Selenify.Common.Console
 
                     disposed = true;
                 }
+
+                GC.SuppressFinalize(this);
             }
         }
     }
