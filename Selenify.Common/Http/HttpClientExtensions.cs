@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using static Selenify.Common.Console.Console;
+using System.Threading;
 
 namespace Selenify.Common.Http
 {
@@ -28,28 +30,34 @@ namespace Selenify.Common.Http
         public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
             string filePath;
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
             using (Console.Console.ProgressBar progressBar = new Console.Console.ProgressBar("Downloading File . . ."))
             {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
+                
                 using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
                 {
-                    long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
-
-                    var relativeProgress = new Progress<long>(totalBytes =>
-                    {
-                        float percentage = (float)totalBytes / responseContentLength!.Value;
-                        progressBar.Report(percentage);
-                    });
-
-                    await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, cancellationToken);
-                    filePath = fileStream.File!.Name;
+                    filePath = await CopyStreamWithProgressBarAsync(fileStream, progressBar, cancellationToken);
                 }
 
                 cancellationTokenSource.Cancel();
             }
 
             return filePath;
+        }
+
+        private static async Task<string> CopyStreamWithProgressBarAsync(DownloadFileStream fileStream, ProgressBar progressBar, CancellationToken cancellationToken)
+        {
+            long? responseContentLength = fileStream.Response!.Content.Headers.ContentLength;
+
+            var relativeProgress = new Progress<long>(totalBytes =>
+            {
+                float percentage = (float)totalBytes / responseContentLength!.Value;
+                progressBar.Report(percentage);
+            });
+
+            await fileStream.Stream!.CopyToAsync(fileStream.File!, 81920, relativeProgress, cancellationToken);
+            return fileStream.File!.Name;
         }
 
         public static async Task<string> DownloadToTempFolder(this HttpClient client, string url)
