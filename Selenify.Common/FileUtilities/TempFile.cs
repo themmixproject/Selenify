@@ -20,6 +20,8 @@ namespace Selenify.Common.FileUtilities
         {
             System.IO.File.Delete(Path);
             FileStream?.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }
