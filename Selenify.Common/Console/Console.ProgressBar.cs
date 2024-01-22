@@ -12,8 +12,8 @@ namespace Selenify.Common.Console
         {
             private bool IsCompleted { get; set; } = false;
 
-            private const int blockCount = 10;
-            private string Prefix { get; set; }
+            private const int blockCount = 20;
+            public string Prefix { get; set; }
 
             private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 15);
 
@@ -71,7 +71,7 @@ namespace Selenify.Common.Console
 
                     int progressBlockCount = (int)(currentProgress * blockCount);
                     int percent = (int)(currentProgress * 100);
-                    string text = string.Format("[{0}{1}] {2}%",
+                    string text = string.Format(Prefix + "[{0}{1}] {2}%",
                         new string('#', progressBlockCount), new string('-', blockCount - progressBlockCount),
                         percent);
 
