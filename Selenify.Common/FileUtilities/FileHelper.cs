@@ -37,9 +37,8 @@ namespace Selenify.Common.FileUtilities
 
         public static string GetFileNameFromUrlOrDefault(string url)
         {
-            string fileName = string.Empty;
             Uri uri = new Uri(url);
-            fileName = Path.GetFileNameWithoutExtension(uri.LocalPath);
+            string fileName = Path.GetFileNameWithoutExtension(uri.LocalPath);
 
             if (string.IsNullOrEmpty(fileName))
             {
