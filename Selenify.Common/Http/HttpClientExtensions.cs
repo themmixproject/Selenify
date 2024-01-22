@@ -30,12 +30,13 @@ namespace Selenify.Common.Http
         public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
             string filePath;
-            using (Console.Console.ProgressBar progressBar = new Console.Console.ProgressBar("Downloading File . . ."))
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = cancellationTokenSource.Token;
                 
-                using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, path))
+                string progressBarPrefix = "Downloading " + Path.GetFileName(fileStream.File!.Name) + " ";
+                using (ProgressBar progressBar = new ProgressBar(progressBarPrefix))
                 {
                     filePath = await CopyStreamWithProgressBarAsync(fileStream, progressBar, cancellationToken);
                 }
