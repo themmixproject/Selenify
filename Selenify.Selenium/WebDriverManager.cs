@@ -3,6 +3,7 @@ using OpenQA.Selenium.Edge;
 using Selenify.Common.Console;
 using Selenify.Common.Utility;
 using System.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace Selenify.Selenium
 {
@@ -24,6 +25,8 @@ namespace Selenify.Selenium
 
         public static void LoadEdgeDriver(EdgeOptions? options = null)
         {
+            Common.Console.Console.UI.WriteLine("Loading Edge driver . . .");
+
             if (options == null)
             {
                 options = GetDefaultEdgeOptions();
@@ -33,7 +36,13 @@ namespace Selenify.Selenium
                 .Configuration
                 .ConfigurationManager
                 .AppSettings["edgeDriverPath"]!;
-            _driver = new EdgeDriver(driverPath, options);
+            EdgeDriverService driverService = EdgeDriverService.CreateDefaultService(driverPath);
+            driverService.HideCommandPromptWindow = true;
+
+            _driver = new EdgeDriver(driverService, options);
+
+            Common.Console.Console.UI.WriteLine("Edge driver loaded");
+            Common.Console.Console.UI.Stop();
         }
 
         private static EdgeOptions GetDefaultEdgeOptions()
