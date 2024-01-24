@@ -34,7 +34,7 @@ namespace Selenify.Common.Wget
 
         public static string DownloadWebPageWithBasicAuth(string url, string dir, string username, string password)
         {
-            return ExecuteCommand("--user=\"" + username + " --password=\"" + password + "\" " + GetBaseCommandString(url, dir));
+            return ExecuteCommand("--user=\"" + username + "\" --password=\"" + password + "\" " + GetBaseCommandString(url, dir));
         }
 
         public static string DownloadWebPageWithCookieContainer(string url, string dir, CookieContainer cookieContainer)
