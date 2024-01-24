@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="References\**" />
-    <EmbeddedResource Remove="References\**" />
-    <None Remove="References\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="References\**" />
+        <EmbeddedResource Remove="References\**" />
+        <None Remove="References\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FileSignatures" Version="4.4.1" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
-    <PackageReference Include="Tesseract" Version="5.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FileSignatures" Version="4.4.1" />
+        <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+        <PackageReference Include="Tesseract" Version="5.2.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Tesseract\tessdata\eng.traineddata">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="Tesseract\tessdata\*.traineddata">
+            <Link>tessdata\%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>
