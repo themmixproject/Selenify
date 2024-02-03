@@ -69,5 +69,10 @@ namespace Selenify.Http
             string authString = Convert.ToBase64String(asciiString);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authString);
         }
+
+        public static void ResetBasicAuthHeader(this HttpClient client)
+        {
+            client.DefaultRequestHeaders.Authorization = null;
+        }
     }
 }
