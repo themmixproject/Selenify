@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Models
+namespace Selenify.Common.Http.Models
 {
     public class DownloadFileStream : IDisposable
     {
@@ -16,7 +16,7 @@ namespace Selenify.Common.Models
 
         public static async Task<DownloadFileStream> CreateAsync(HttpClient client, string fileUrl, string path)
         {
-            var downloadFileStream = new DownloadFileStream ();
+            var downloadFileStream = new DownloadFileStream();
 
             downloadFileStream.Response = await client.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead);
             downloadFileStream.Stream = await downloadFileStream.Response.Content.ReadAsStreamAsync();

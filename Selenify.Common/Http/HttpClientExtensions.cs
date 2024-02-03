@@ -1,6 +1,5 @@
 ﻿using Selenify.Common.Extensions;
-using Selenify.Common.Models;
-using Selenify.Common.Utility;
+using Selenify.Common.Configuration;
 using Selenify.Common.Console;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Selenify.Common.Console.Console;
 using System.Threading;
+using Selenify.Common.Http.Models;
 
 namespace Selenify.Common.Http
 {

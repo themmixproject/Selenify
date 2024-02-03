@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Utility
+namespace Selenify.Common.Configuration
 {
     public static class ConfigurationLoader
     {
@@ -16,9 +16,7 @@ namespace Selenify.Common.Utility
                 ExeConfigFilename = configPath,
             };
 
-            Configuration configuration = System
-                .Configuration
-                .ConfigurationManager
+            System.Configuration.Configuration configuration = ConfigurationManager
                 .OpenMappedExeConfiguration(
                 fileMap,
                 ConfigurationUserLevel.None);
