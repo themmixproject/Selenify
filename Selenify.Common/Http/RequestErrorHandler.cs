@@ -30,8 +30,19 @@ namespace Selenify.Common.Http
             catch (HttpRequestException ex)
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
-                string url = request.RequestUri.ToString();
-                string exceptionMessage = ex.ToString() + "\n--At URL: " + url + "\n--Response Body:\n" + responseBody + "\n";
+
+                string url = "";
+                Uri? requestUri = request.RequestUri;
+                if(requestUri != null)
+                {
+                    url = requestUri.ToString();
+                }
+
+                string exceptionMessage = ex.ToString()
+                    + "--Request Method:" + request.Method
+                    + "\n--At URL: "  + url 
+                    + "\n--Response Body:\n" + responseBody
+                    + "\n";
                 throw new HttpRequestException(exceptionMessage);
             }
         }
