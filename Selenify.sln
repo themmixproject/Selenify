@@ -5,9 +5,11 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenify", "Selenify\Selenify.csproj", "{2B218937-82CF-4872-B2AF-EA90ADA7E75D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenify.Common", "Selenify.Common\Selenify.Common.csproj", "{B13A4484-6F65-484C-97B3-3741256DA8DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenify.Common", "Selenify.Common\Selenify.Common.csproj", "{B13A4484-6F65-484C-97B3-3741256DA8DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenify.Selenium", "Selenify.Selenium\Selenify.Selenium.csproj", "{04DB4BEB-49BA-4397-9E5F-E073F5434174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenify.Selenium", "Selenify.Selenium\Selenify.Selenium.csproj", "{04DB4BEB-49BA-4397-9E5F-E073F5434174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenify.Http", "Selenify.Http\Selenify.Http.csproj", "{D6F27CFA-D362-44B2-8720-3DC7E044FF29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{04DB4BEB-49BA-4397-9E5F-E073F5434174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04DB4BEB-49BA-4397-9E5F-E073F5434174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04DB4BEB-49BA-4397-9E5F-E073F5434174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F27CFA-D362-44B2-8720-3DC7E044FF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F27CFA-D362-44B2-8720-3DC7E044FF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F27CFA-D362-44B2-8720-3DC7E044FF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F27CFA-D362-44B2-8720-3DC7E044FF29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

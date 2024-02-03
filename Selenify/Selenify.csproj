@@ -23,6 +23,7 @@
   </ItemGroup>
 <ItemGroup>
   <ProjectReference Include="..\Selenify.Common\Selenify.Common.csproj" />
+  <ProjectReference Include="..\Selenify.Http\Selenify.Http.csproj" />
   <ProjectReference Include="..\Selenify.Selenium\Selenify.Selenium.csproj" />
 </ItemGroup>
 <ItemGroup>

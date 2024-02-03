@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Http.Models
+namespace Selenify.Http.Models
 {
     public class DownloadFileStream : IDisposable
     {

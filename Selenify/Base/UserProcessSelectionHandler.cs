@@ -1,15 +1,5 @@
-﻿using OpenQA.Selenium.Internal;
-using Selenify.Base.Models.Process;
-using Selenify.Common.Utility;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using Selenify.Base.Models.Process;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 using Console = Selenify.Common.Console.Console;
 
 namespace Selenify.Base

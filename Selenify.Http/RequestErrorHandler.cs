@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Http
+namespace Selenify.Http
 {
     public class RequestErrorHandler : DelegatingHandler
     {

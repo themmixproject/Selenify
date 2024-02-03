@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Selenify.Common.Extensions
+namespace Selenify.Http.StreamUtilities
 {
     public static class StreamExtensions
     {

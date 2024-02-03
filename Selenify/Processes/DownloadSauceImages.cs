@@ -10,8 +10,8 @@ using System.Security.Policy;
 using System.Threading;
 using static Selenify.Selenium.WebDriverManager;
 using Selenify.Selenium.Extensions;
-using Selenify.Common.Http;
-using Selenify.Common.Utility;
+using Selenify.Http;
+using Selenify.Common.Configuration;
 using Selenify.Base.Models.Process;
 using Console = Selenify.Common.Console;
 

@@ -1,9 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using Selenify.Common.Console;
-using Selenify.Common.Utility;
+using Selenify.Common.Configuration;
 using System.Configuration;
-using System.Runtime.CompilerServices;
 
 namespace Selenify.Selenium
 {

@@ -1,17 +1,9 @@
-﻿using Selenify.Common.Extensions;
-using Selenify.Common.Configuration;
-using Selenify.Common.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Selenify.Http.StreamUtilities;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using static Selenify.Common.Console.Console;
-using System.Threading;
-using Selenify.Common.Http.Models;
+using Selenify.Http.Models;
 
-namespace Selenify.Common.Http
+namespace Selenify.Http
 {
     public static class HttpClientExtensions
     {
