@@ -20,10 +20,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Tesseract\tessdata\*.traineddata">
-            <Link>tessdata\%(Filename)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+      <None Update="Tesseract\tessdata\eng.traineddata">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Tesseract\tesseractconfig.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

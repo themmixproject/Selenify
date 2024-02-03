@@ -11,7 +11,7 @@ namespace Selenify.Common.Tesseract
     {
         public static string GetTextFromImage(string imagePath)
         {
-            using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
+            using (TesseractEngine engine = new TesseractEngine(@"./Tesseract/tessdata", "eng", EngineMode.Default, "./Tesseract/tesseractconfig.txt"))
             {
                 using (var image = Pix.LoadFromFile(imagePath))
                 {
