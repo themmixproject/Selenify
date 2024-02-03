@@ -11,24 +11,22 @@ namespace Selenify.Common.Console
         public class ProgressBar : IProgress<float>, IDisposable
         {
             private bool IsCompleted { get; set; } = false;
-
             private const int blockCount = 20;
             public string Prefix { get; set; }
-
             private readonly TimeSpan interval = TimeSpan.FromSeconds(1.0 / 15);
-
             private readonly Timer timer;
-
             private float currentProgress = 0;
             private string currentText = string.Empty;
-
             private bool disposed = false;
+            private readonly int LineToUpdate = 0;
 
             public ProgressBar(string prefix)
             {
                 Prefix = prefix;
 
                 timer = new Timer(TimerHandler!);
+
+                LineToUpdate = Console.UI.LineCount;
 
                 if (!System.Console.IsOutputRedirected)
                 {
@@ -105,7 +103,7 @@ namespace Selenify.Common.Console
                     outputBuilder.Append('\b', overlapCount);
                 }
 
-                UI.WriteLine(text);
+                UI.UpdateLine(LineToUpdate, text);
                 currentText = text;
             }
 
