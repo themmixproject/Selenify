@@ -1,23 +1,22 @@
-﻿using System;
-using System.Configuration;
-using OpenQA.Selenium.Support.UI;
-using SeleniumExtras.WaitHelpers;
-using System.Collections.ObjectModel;
-using Selenify.Common.Utility;
+﻿using Selenify.Common.AutoIt;
 using static Selenify.ApplicationInitializer;
-using Selenify.Processes;
-using Selenify.Common.Http;
-using Selenify.Base.Models.Process;
 
 internal class Program {
     private static void Main( string[] args ) {
         StartUp();
 
-        IProcess? selectedProcess = new DownloadSauceImages();
+        //IProcess? selectedProcess = new DownloadSauceImages();
 
-        if (selectedProcess != null)
-        {
-            selectedProcess.Run();
-        }
+        //if (selectedProcess != null)
+        //{
+        //    selectedProcess.Run();
+        //}
+
+        System.Diagnostics.Process.Start("C:\\Windows\\notepad.exe");
+        string sendText = AutoItXExtensions.PrepareSendText("HELLO{ENTER}HELLO");
+
+        AutoIt.AutoItX.WinActivate("Untitled - Notepad");
+        Thread.Sleep(1000);
+        AutoIt.AutoItX.Send(sendText);
     }
 }

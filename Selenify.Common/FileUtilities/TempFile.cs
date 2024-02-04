@@ -13,12 +13,17 @@ namespace Selenify.Common.FileUtilities
         public TempFile()
         {
             Path = System.IO.Path.GetTempFileName();
-            FileStream = System.IO.File.Create(Path);
+            FileStream = new FileStream(
+                Path,
+                FileMode.Create,
+                FileAccess.ReadWrite,
+                FileShare.None
+            );
         }
 
         public void Dispose()
         {
-            System.IO.File.Delete(Path);
+            File.Delete(Path);
             FileStream?.Dispose();
 
             GC.SuppressFinalize(this);

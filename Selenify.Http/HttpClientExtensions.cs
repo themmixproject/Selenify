@@ -19,6 +19,18 @@ namespace Selenify.Http
             return filePath;
         }
 
+        public static async Task<string> DownloadAsync(this HttpClient client, string url, FileStream file)
+        {
+            string filePath;
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, file))
+            {
+                await fileStream.Stream!.CopyToAsync(fileStream.File!);
+                filePath = fileStream.File!.Name;
+            }
+
+            return filePath;
+        }
+
         public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, string path)
         {
             string filePath;
@@ -27,6 +39,26 @@ namespace Selenify.Http
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = cancellationTokenSource.Token;
                 
+                string progressBarPrefix = "Downloading " + Path.GetFileName(fileStream.File!.Name) + " ";
+                using (ProgressBar progressBar = new ProgressBar(progressBarPrefix))
+                {
+                    filePath = await CopyStreamWithProgressBarAsync(fileStream, progressBar, cancellationToken);
+                }
+
+                cancellationTokenSource.Cancel();
+            }
+
+            return filePath;
+        }
+
+        public static async Task<string> DownloadWithProgressBarAsync(this HttpClient client, string url, FileStream file)
+        {
+            string filePath;
+            using (DownloadFileStream fileStream = await DownloadFileStream.CreateAsync(client, url, file))
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
+
                 string progressBarPrefix = "Downloading " + Path.GetFileName(fileStream.File!.Name) + " ";
                 using (ProgressBar progressBar = new ProgressBar(progressBarPrefix))
                 {
